@@ -1,0 +1,338 @@
+{
+  "profile": {
+    "isOnboarded": true,
+    "category": "school",
+    "name": "Alex",
+    "grade": "Class 12",
+    "board": "CBSE",
+    "subject": "Physics",
+    "topic": "Current Electricity",
+    "topicId": "current_electricity",
+    "degree": "",
+    "year": "",
+    "branch": "",
+    "exam": "",
+    "targetYear": "",
+    "preparationStage": "",
+    "preferences": {
+      "confidence": "medium",
+      "struggleArea": "Numerical problem solving & formula application",
+      "learningStyle": "Simple intuitive explanations with worked examples",
+      "studyTime": "45 minutes",
+      "immediateGoal": "Master core concepts for high-scoring board & entrance performance"
+    },
+    "createdAt": "2026-10-28T07:06:53.586Z",
+    "updatedAt": "2026-10-28T07:08:06.041Z"
+  },
+  "assessmentSession": {
+    "id": "diag_session_1793171286049",
+    "topicId": "current_electricity",
+    "startedAt": "2026-10-28T07:08:06.049Z",
+    "totalTargetQuestions": 6,
+    "currentIndex": 5,
+    "answers": [
+      {
+        "questionId": "diag_ce_01",
+        "conceptId": "electric_current_drift",
+        "conceptName": "Electric Current & Drift Velocity",
+        "difficulty": 1,
+        "selectedOptionId": "A",
+        "isCorrect": true,
+        "feedback": "Correct! By conservation of charge, the rate of charge entering any section must equal the rate leaving it, so current I remains constant regardless of cross-section.",
+        "submittedAt": "2026-10-28T07:08:22.286Z"
+      },
+      {
+        "questionId": "diag_ce_03",
+        "conceptId": "temp_dependence_resistance",
+        "conceptName": "Temperature Coefficient of Resistance",
+        "difficulty": 2,
+        "selectedOptionId": "A",
+        "isCorrect": true,
+        "feedback": "Spot on! In metals, increased lattice vibrations increase electron scattering (reducing relaxation time τ). In semiconductors, thermal excitation creates free electron-hole pairs so charge carrier density n surges exponentially, overpowering scattering.",
+        "submittedAt": "2026-10-28T07:08:44.765Z"
+      },
+      {
+        "questionId": "diag_ce_06",
+        "conceptId": "kirchhoff_laws",
+        "conceptName": "Kirchhoff's Junction & Loop Rules",
+        "difficulty": 3,
+        "selectedOptionId": "A",
+        "isCorrect": true,
+        "feedback": "Mastery demonstrated! The Junction Rule states no charge can accumulate at a node (conservation of charge). The Loop Rule states that the net work done moving a test charge around any closed loop in an electrostatic conservative field must be zero (conservation of energy).",
+        "submittedAt": "2026-10-28T07:09:07.569Z"
+      },
+      {
+        "questionId": "diag_ce_07",
+        "conceptId": "wheatstone_bridge",
+        "conceptName": "Wheatstone Bridge Principle",
+        "difficulty": 3,
+        "selectedOptionId": "A",
+        "isCorrect": true,
+        "feedback": "Outstanding! At balance, no current flows through galvanometer BD: P / Q = R / S. Therefore, S = (Q × R) / P = (20 × 15) / 10 = 30 Ω.",
+        "submittedAt": "2026-10-28T07:09:31.234Z"
+      },
+      {
+        "questionId": "diag_ce_08",
+        "conceptId": "electric_power_energy",
+        "conceptName": "Electrical Energy, Power & Maximum Power Transfer",
+        "difficulty": 3,
+        "selectedOptionId": "A",
+        "isCorrect": true,
+        "feedback": "Superb! By the Maximum Power Transfer Theorem, power to the load P(R) = [E/(R+r)]² · R. Differentiating dP/dR and setting to 0 yields R = r, giving maximum power P_max = E² / (4r).",
+        "submittedAt": "2026-10-28T07:09:52.992Z"
+      },
+      {
+        "questionId": "diag_ce_02",
+        "conceptId": "ohms_law_resistance",
+        "conceptName": "Ohm's Law & Resistivity Factors",
+        "difficulty": 1,
+        "selectedOptionId": "B",
+        "isCorrect": true,
+        "feedback": "Brilliant! Volume V = A × L is constant. When length doubles (L' = 2L), area halves (A' = A/2). Since R = ρL/A, R' = ρ(2L)/(A/2) = 4R.",
+        "submittedAt": "2026-10-28T07:10:15.566Z"
+      }
+    ],
+    "currentQuestion": {
+      "id": "diag_ce_02",
+      "conceptId": "ohms_law_resistance",
+      "conceptName": "Ohm's Law & Resistivity Factors",
+      "difficulty": 1,
+      "question": "A cylindrical copper wire of length L and resistance R is stretched uniformly until its length becomes 2L. If the density and volume remain unchanged, what is its new resistance?",
+      "options": [
+        {
+          "id": "A",
+          "text": "2R"
+        },
+        {
+          "id": "B",
+          "text": "4R"
+        },
+        {
+          "id": "C",
+          "text": "R / 2"
+        },
+        {
+          "id": "D",
+          "text": "R (unchanged because resistivity is constant)"
+        }
+      ],
+      "hint": "When you pull dough into a longer string, what happens to its thickness?"
+    },
+    "status": "completed",
+    "adaptiveLevel": 3,
+    "demonstratedConcepts": [
+      "electric_current_drift",
+      "temp_dependence_resistance",
+      "kirchhoff_laws",
+      "wheatstone_bridge",
+      "electric_power_energy",
+      "ohms_law_resistance"
+    ],
+    "strugglingConcepts": [],
+    "completedAt": "2026-10-28T07:10:15.566Z"
+  },
+  "assessmentHistory": [
+    {
+      "id": "diag_session_1793171286049",
+      "topicId": "current_electricity",
+      "startedAt": "2026-10-28T07:08:06.049Z",
+      "totalTargetQuestions": 6,
+      "currentIndex": 5,
+      "answers": [
+        {
+          "questionId": "diag_ce_01",
+          "conceptId": "electric_current_drift",
+          "conceptName": "Electric Current & Drift Velocity",
+          "difficulty": 1,
+          "selectedOptionId": "A",
+          "isCorrect": true,
+          "feedback": "Correct! By conservation of charge, the rate of charge entering any section must equal the rate leaving it, so current I remains constant regardless of cross-section.",
+          "submittedAt": "2026-10-28T07:08:22.286Z"
+        },
+        {
+          "questionId": "diag_ce_03",
+          "conceptId": "temp_dependence_resistance",
+          "conceptName": "Temperature Coefficient of Resistance",
+          "difficulty": 2,
+          "selectedOptionId": "A",
+          "isCorrect": true,
+          "feedback": "Spot on! In metals, increased lattice vibrations increase electron scattering (reducing relaxation time τ). In semiconductors, thermal excitation creates free electron-hole pairs so charge carrier density n surges exponentially, overpowering scattering.",
+          "submittedAt": "2026-10-28T07:08:44.765Z"
+        },
+        {
+          "questionId": "diag_ce_06",
+          "conceptId": "kirchhoff_laws",
+          "conceptName": "Kirchhoff's Junction & Loop Rules",
+          "difficulty": 3,
+          "selectedOptionId": "A",
+          "isCorrect": true,
+          "feedback": "Mastery demonstrated! The Junction Rule states no charge can accumulate at a node (conservation of charge). The Loop Rule states that the net work done moving a test charge around any closed loop in an electrostatic conservative field must be zero (conservation of energy).",
+          "submittedAt": "2026-10-28T07:09:07.569Z"
+        },
+        {
+          "questionId": "diag_ce_07",
+          "conceptId": "wheatstone_bridge",
+          "conceptName": "Wheatstone Bridge Principle",
+          "difficulty": 3,
+          "selectedOptionId": "A",
+          "isCorrect": true,
+          "feedback": "Outstanding! At balance, no current flows through galvanometer BD: P / Q = R / S. Therefore, S = (Q × R) / P = (20 × 15) / 10 = 30 Ω.",
+          "submittedAt": "2026-10-28T07:09:31.234Z"
+        },
+        {
+          "questionId": "diag_ce_08",
+          "conceptId": "electric_power_energy",
+          "conceptName": "Electrical Energy, Power & Maximum Power Transfer",
+          "difficulty": 3,
+          "selectedOptionId": "A",
+          "isCorrect": true,
+          "feedback": "Superb! By the Maximum Power Transfer Theorem, power to the load P(R) = [E/(R+r)]² · R. Differentiating dP/dR and setting to 0 yields R = r, giving maximum power P_max = E² / (4r).",
+          "submittedAt": "2026-10-28T07:09:52.992Z"
+        },
+        {
+          "questionId": "diag_ce_02",
+          "conceptId": "ohms_law_resistance",
+          "conceptName": "Ohm's Law & Resistivity Factors",
+          "difficulty": 1,
+          "selectedOptionId": "B",
+          "isCorrect": true,
+          "feedback": "Brilliant! Volume V = A × L is constant. When length doubles (L' = 2L), area halves (A' = A/2). Since R = ρL/A, R' = ρ(2L)/(A/2) = 4R.",
+          "submittedAt": "2026-10-28T07:10:15.566Z"
+        }
+      ],
+      "currentQuestion": {
+        "id": "diag_ce_02",
+        "conceptId": "ohms_law_resistance",
+        "conceptName": "Ohm's Law & Resistivity Factors",
+        "difficulty": 1,
+        "question": "A cylindrical copper wire of length L and resistance R is stretched uniformly until its length becomes 2L. If the density and volume remain unchanged, what is its new resistance?",
+        "options": [
+          {
+            "id": "A",
+            "text": "2R"
+          },
+          {
+            "id": "B",
+            "text": "4R"
+          },
+          {
+            "id": "C",
+            "text": "R / 2"
+          },
+          {
+            "id": "D",
+            "text": "R (unchanged because resistivity is constant)"
+          }
+        ],
+        "hint": "When you pull dough into a longer string, what happens to its thickness?"
+      },
+      "status": "completed",
+      "adaptiveLevel": 3,
+      "demonstratedConcepts": [
+        "electric_current_drift",
+        "temp_dependence_resistance",
+        "kirchhoff_laws",
+        "wheatstone_bridge",
+        "electric_power_energy",
+        "ohms_law_resistance"
+      ],
+      "strugglingConcepts": [],
+      "completedAt": "2026-10-28T07:10:15.566Z"
+    }
+  ],
+  "conceptProficiency": {
+    "electric_current_drift": {
+      "conceptId": "electric_current_drift",
+      "name": "Electric Current & Drift Velocity",
+      "score": 100,
+      "attempts": 2,
+      "correct": 2,
+      "status": "mastered"
+    },
+    "ohms_law_resistance": {
+      "conceptId": "ohms_law_resistance",
+      "name": "Ohm's Law & Resistivity Factors",
+      "score": 100,
+      "attempts": 1,
+      "correct": 1,
+      "status": "mastered"
+    },
+    "temp_dependence_resistance": {
+      "conceptId": "temp_dependence_resistance",
+      "name": "Temperature Coefficient of Resistance",
+      "score": 100,
+      "attempts": 1,
+      "correct": 1,
+      "status": "mastered"
+    },
+    "resistor_combinations": {
+      "conceptId": "resistor_combinations",
+      "name": "Series & Parallel Resistor Networks",
+      "score": 0,
+      "attempts": 0,
+      "correct": 0,
+      "status": "unassessed"
+    },
+    "emf_internal_resistance": {
+      "conceptId": "emf_internal_resistance",
+      "name": "EMF, Terminal Voltage & Internal Resistance",
+      "score": 0,
+      "attempts": 0,
+      "correct": 0,
+      "status": "unassessed"
+    },
+    "kirchhoff_laws": {
+      "conceptId": "kirchhoff_laws",
+      "name": "Kirchhoff's Junction & Loop Rules",
+      "score": 100,
+      "attempts": 1,
+      "correct": 1,
+      "status": "mastered"
+    },
+    "wheatstone_bridge": {
+      "conceptId": "wheatstone_bridge",
+      "name": "Wheatstone Bridge Principle",
+      "score": 100,
+      "attempts": 1,
+      "correct": 1,
+      "status": "mastered"
+    },
+    "electric_power_energy": {
+      "conceptId": "electric_power_energy",
+      "name": "Electrical Energy, Power & Maximum Power Transfer",
+      "score": 100,
+      "attempts": 1,
+      "correct": 1,
+      "status": "mastered"
+    }
+  },
+  "completedActivities": [],
+  "practiceRecords": [
+    {
+      "questionId": "diag_ce_01",
+      "conceptId": "electric_current_drift",
+      "isCorrect": true,
+      "selectedOptionId": "A",
+      "timestamp": "2026-10-28T07:12:47.616Z"
+    }
+  ],
+  "revisionQueue": [],
+  "tutorHistory": [
+    {
+      "role": "user",
+      "content": "Explain this concept simply"
+    },
+    {
+      "role": "assistant",
+      "content": "Here is the simplest way to picture **Current Electricity**:\n\n* **Voltage (V)** is the water pump pressure pushing charge.\n* **Current (I)** is the flow rate of water gallons per second.\n* **Resistance (R)** is pebbles and narrow pipes choking the flow.\n* **Internal Resistance (r)** is friction inside the water pump itself!\n\nWhen you ask the pump for maximum water, its own internal friction eats some pressure before the water ever leaves the spout. Does that visual click?"
+    },
+    {
+      "role": "user",
+      "content": "Why does wire stretching multiply R by 4?"
+    },
+    {
+      "role": "assistant",
+      "content": "Hey Alex! I'm tracking your progress in **Current Electricity**.\n\nYou have strong momentum! What would you like to tackle right now?\n\n* **Clarify a concept** that feels fuzzy\n* **Break down a formula** step-by-step\n* **Try an interactive question** to test your exam readiness"
+    }
+  ]
+}
