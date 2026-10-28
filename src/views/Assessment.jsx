@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { X, ArrowRight, CheckCircle2, AlertCircle, HelpCircle } from "lucide-react";
-import MiloCharacter from "../components/MiloCharacter";
+import LumiCharacter from "../components/LumiCharacter";
 import { startAssessment, submitAssessmentAnswer } from "../services/api";
 
 export default function Assessment({ topicId = "current_electricity", onExit, onComplete }) {
@@ -14,8 +14,8 @@ export default function Assessment({ topicId = "current_electricity", onExit, on
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionResult, setSubmissionResult] = useState(null);
   
-  const [miloExpression, setMiloExpression] = useState("welcome");
-  const [miloMessage, setMiloMessage] = useState("Let's discover what you know! Don't stress—this helps me find your perfect starting point.");
+  const [lumiExpression, setLumiExpression] = useState("welcome");
+  const [lumiMessage, setLumiMessage] = useState("Let's discover what you know! Don't stress—this helps me find your perfect starting point.");
   const [showHint, setShowHint] = useState(false);
 
   // Initialize assessment on mount
@@ -29,8 +29,8 @@ export default function Assessment({ topicId = "current_electricity", onExit, on
           setCurrentQuestion(data.session.question);
           setCurrentNumber(data.session.currentNumber);
           setTotalQuestions(data.session.totalQuestions);
-          setMiloMessage(data.session.miloMessage);
-          setMiloExpression(data.session.miloExpression || "welcome");
+          setLumiMessage(data.session.lumiMessage);
+          setLumiExpression(data.session.lumiExpression || "welcome");
           setLoading(false);
         }
       } catch (err) {
@@ -57,7 +57,7 @@ export default function Assessment({ topicId = "current_electricity", onExit, on
             const opt = currentQuestion.options[keyNum - 1];
             if (opt) {
               setSelectedOptionId(opt.id);
-              setMiloExpression("thinking");
+              setLumiExpression("thinking");
             }
           }
         }
@@ -87,8 +87,8 @@ export default function Assessment({ topicId = "current_electricity", onExit, on
       });
 
       setSubmissionResult(data.result);
-      setMiloExpression(data.result.miloExpression || (data.result.isCorrect ? "celebrating" : "concerned"));
-      setMiloMessage(data.result.miloMessage);
+      setLumiExpression(data.result.lumiExpression || (data.result.isCorrect ? "celebrating" : "concerned"));
+      setLumiMessage(data.result.lumiMessage);
 
       // Store next step info
       if (data.isComplete) {
@@ -119,8 +119,8 @@ export default function Assessment({ topicId = "current_electricity", onExit, on
       setSelectedOptionId(null);
       setSubmissionResult(null);
       setShowHint(false);
-      setMiloExpression("curious");
-      setMiloMessage("Here’s the next question tailored to your responses:");
+      setLumiExpression("curious");
+      setLumiMessage("Here’s the next question tailored to your responses:");
     } else {
       onComplete();
     }
@@ -138,9 +138,9 @@ export default function Assessment({ topicId = "current_electricity", onExit, on
           gap: 16,
         }}
       >
-        <MiloCharacter expression="thinking" size={90} />
+        <LumiCharacter expression="thinking" size={90} />
         <p style={{ fontSize: 16, fontWeight: 600, color: "var(--text-secondary)" }}>
-          Milo is preparing your diagnostic assessment...
+          Lumi is preparing your diagnostic assessment...
         </p>
       </div>
     );
@@ -244,7 +244,7 @@ export default function Assessment({ topicId = "current_electricity", onExit, on
           </div>
         )}
 
-        {/* Milo Guidance Bubble */}
+        {/* Lumi Guidance Bubble */}
         <div
           style={{
             display: "flex",
@@ -258,10 +258,10 @@ export default function Assessment({ topicId = "current_electricity", onExit, on
             boxShadow: "var(--shadow-subtle)",
           }}
         >
-          <MiloCharacter expression={miloExpression} size={54} />
+          <LumiCharacter expression={lumiExpression} size={54} />
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 14, color: "var(--text-primary)", fontWeight: 500, lineHeight: 1.4 }}>
-              {miloMessage}
+              {lumiMessage}
             </div>
           </div>
           {currentQuestion?.hint && !submissionResult && (
@@ -299,7 +299,7 @@ export default function Assessment({ topicId = "current_electricity", onExit, on
               lineHeight: 1.5,
             }}
           >
-            <strong>💡 Clue from Milo:</strong> {currentQuestion.hint}
+            <strong>💡 Clue from Lumi:</strong> {currentQuestion.hint}
           </div>
         )}
 
@@ -351,7 +351,7 @@ export default function Assessment({ topicId = "current_electricity", onExit, on
                 onClick={() => {
                   if (!submissionResult) {
                     setSelectedOptionId(opt.id);
-                    setMiloExpression("thinking");
+                    setLumiExpression("thinking");
                   }
                 }}
                 disabled={!!submissionResult}

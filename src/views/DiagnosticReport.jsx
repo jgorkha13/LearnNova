@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { CheckCircle, AlertTriangle, XCircle, ArrowRight, BookOpen, Sparkles } from "lucide-react";
-import MiloCharacter from "../components/MiloCharacter";
+import LumiCharacter from "../components/LumiCharacter";
 import { fetchAssessmentResults } from "../services/api";
 
 export default function DiagnosticReport({ onProceedToPath, onOpenTutor }) {
@@ -24,21 +24,21 @@ export default function DiagnosticReport({ onProceedToPath, onOpenTutor }) {
   if (loading) {
     return (
       <div style={{ textAlign: "center", padding: "80px 20px" }}>
-        <MiloCharacter expression="thinking" size={90} />
+        <LumiCharacter expression="thinking" size={90} />
         <p style={{ marginTop: 16, fontSize: 16, color: "var(--text-secondary)" }}>
-          Milo is computing your concept proficiency report...
+          Lumi is computing your concept proficiency report...
         </p>
       </div>
     );
   }
 
-  const { overallScore = 0, totalAnswered = 0, correctCount = 0, conceptBreakdown = [], miloGuidance = "" } = results || {};
+  const { overallScore = 0, totalAnswered = 0, correctCount = 0, conceptBreakdown = [], lumiGuidance = "" } = results || {};
 
   const mastered = conceptBreakdown.filter((c) => c.status === "mastered");
   const needsPractice = conceptBreakdown.filter((c) => c.status === "needs_practice");
   const criticalGaps = conceptBreakdown.filter((c) => c.status === "gap");
 
-  const miloExpression = overallScore >= 70 ? "celebrating" : overallScore >= 40 ? "encouraging" : "concerned";
+  const lumiExpression = overallScore >= 70 ? "celebrating" : overallScore >= 40 ? "encouraging" : "concerned";
 
   return (
     <div className="page-container" style={{ padding: "32px 20px" }}>
@@ -55,7 +55,7 @@ export default function DiagnosticReport({ onProceedToPath, onOpenTutor }) {
           border: "1px solid var(--border-light)",
         }}
       >
-        <MiloCharacter expression={miloExpression} size={96} />
+        <LumiCharacter expression={lumiExpression} size={96} />
 
         <div style={{ flex: 1 }}>
           <div
@@ -78,7 +78,7 @@ export default function DiagnosticReport({ onProceedToPath, onOpenTutor }) {
             Your Concept Knowledge Map
           </h2>
           <p style={{ fontSize: 15, color: "var(--text-secondary)", lineHeight: 1.5, margin: 0 }}>
-            {miloGuidance}
+            {lumiGuidance}
           </p>
         </div>
 
@@ -236,7 +236,7 @@ export default function DiagnosticReport({ onProceedToPath, onOpenTutor }) {
                 Critical Knowledge Gaps ({criticalGaps.length})
               </h3>
               <p style={{ fontSize: 13, color: "var(--text-muted)", margin: 0 }}>
-                High friction detected. Milo will break these down with analogies, simple steps, and zero judgment.
+                High friction detected. Lumi will break these down with analogies, simple steps, and zero judgment.
               </p>
             </div>
           </div>
@@ -289,7 +289,7 @@ export default function DiagnosticReport({ onProceedToPath, onOpenTutor }) {
             Ready to start your personalized learning path?
           </h4>
           <p style={{ fontSize: 14, color: "var(--text-secondary)", margin: 0 }}>
-            Milo has sequenced your activities based on your exact diagnostic results.
+            Lumi has sequenced your activities based on your exact diagnostic results.
           </p>
         </div>
 

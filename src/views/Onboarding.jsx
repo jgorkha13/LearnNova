@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ArrowLeft, ArrowRight, Check, School, GraduationCap, Target } from "lucide-react";
 import LumiCharacter from "../components/LumiCharacter";
-import MiloSpeech from "../components/MiloSpeech";
+import LumiSpeech from "../components/LumiSpeech";
 
 export default function Onboarding({ onComplete, curriculum, initialSelections = {}, onExit }) {
   const [step, setStep] = useState(1);
@@ -150,7 +150,7 @@ export default function Onboarding({ onComplete, curriculum, initialSelections =
         {/* Step 1: Who are you? */}
         {step === 1 && (
           <div>
-            <MiloSpeech
+            <LumiSpeech
               expression="welcome"
               message="Hey! I’m Lumi. I’ll help you figure out what you know and build your personalized learning path."
               size={64}
@@ -257,7 +257,7 @@ export default function Onboarding({ onComplete, curriculum, initialSelections =
         {/* Step 2: Academic Details */}
         {step === 2 && (
           <div>
-            <MiloSpeech
+            <LumiSpeech
               expression="thinking"
               message="Great! Now let’s pinpoint your exact curriculum so every question and lesson is 100% relevant."
               size={64}
@@ -441,7 +441,7 @@ export default function Onboarding({ onComplete, curriculum, initialSelections =
         {/* Step 3: Learning Preferences */}
         {step === 3 && (
           <div>
-            <MiloSpeech
+            <LumiSpeech
               expression="curious"
               message="Almost ready! Tell me a bit about how you like to learn so I can adjust my explanations."
               size={64}

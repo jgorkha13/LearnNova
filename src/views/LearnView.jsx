@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { CheckCircle2, Play, Lock, AlertTriangle, ArrowRight, Sparkles, BookOpen, Clock } from "lucide-react";
-import MiloCharacter from "../components/MiloCharacter";
+import LumiCharacter from "../components/LumiCharacter";
 import LessonModal from "./LessonModal";
 import { fetchLearningPath } from "../services/api";
 
@@ -32,7 +32,7 @@ export default function LearnView({ onStartDiagnostic, onOpenTutor }) {
   if (loading) {
     return (
       <div className="page-container" style={{ textAlign: "center", padding: "80px 20px" }}>
-        <MiloCharacter expression="thinking" size={80} />
+        <LumiCharacter expression="thinking" size={80} />
         <p style={{ marginTop: 16, color: "var(--text-secondary)" }}>
           Building your personalized learning journey...
         </p>
@@ -44,7 +44,7 @@ export default function LearnView({ onStartDiagnostic, onOpenTutor }) {
 
   return (
     <div className="page-container">
-      {/* Milo Next Best Action Hero Card */}
+      {/* Lumi Next Best Action Hero Card */}
       <div
         className="card"
         style={{
@@ -57,7 +57,7 @@ export default function LearnView({ onStartDiagnostic, onOpenTutor }) {
           border: "1px solid var(--border-light)",
         }}
       >
-        <MiloCharacter expression="explaining" size={84} />
+        <LumiCharacter expression="explaining" size={84} />
 
         <div style={{ flex: 1, minWidth: 0 }}>
           <div

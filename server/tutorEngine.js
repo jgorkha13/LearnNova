@@ -1,4 +1,4 @@
-// Context-aware AI Tutor engine for Milo companion
+// Context-aware AI Tutor engine for Lumi companion
 
 import { CURRICULUM_DATA } from "./curriculum.js";
 import { LESSONS_DATA } from "./lessonsData.js";
@@ -52,7 +52,7 @@ export async function handleTutorChat({ message, context = {}, history = [] }) {
 async function callGeminiTutor({ apiKey, message, context, history }) {
   const { studentProfile, currentTopic, weakConcepts, masteredConcepts } = context;
 
-  const systemInstruction = `You are Milo, an encouraging, razor-sharp, and warm AI learning companion on LearnNova.
+  const systemInstruction = `You are Lumi, an encouraging, razor-sharp, and warm AI learning companion on LearnNova.
 You are helping a ${studentProfile.grade || "student"} studying ${studentProfile.subject || "Physics"} - ${studentProfile.topic || "Current Electricity"} (${studentProfile.board || "CBSE/Competitive"}).
 
 Key Student Context:
@@ -61,7 +61,7 @@ Key Student Context:
 - Learning Style Preference: ${studentProfile.preferences?.learningStyle || "Interactive with analogies and worked examples"}
 
 Behavior Rules:
-1. Speak in Milo's voice: friendly, concise, encouraging, and pedagogically sound.
+1. Speak in Lumi's voice: friendly, concise, encouraging, and pedagogically sound.
 2. Socratic Guidance: Never dump raw final answers immediately when asked for homework or test problems. Guide through intuition, step-by-step clues, or analogies.
 3. Keep responses structured and digestible: use short paragraphs, bullet points, and clean formulas.
 4. If the student asks why their answer was wrong or about a weak concept, address the specific underlying physics misconception.
@@ -143,7 +143,7 @@ function generateLocalSocraticResponse({
   // 3. Give me a hint / clue
   if (text.includes("hint") || text.includes("clue") || text.includes("stuck")) {
     return {
-      reply: `💡 **Milo's Guiding Clue:**\n\n1. Always start by identifying what stays **constant** (e.g., in series: Current is constant; in parallel: Potential difference is constant; in stretching: Volume is constant).\n2. Write down the fundamental relation first ($I = n e A v_d$ or $R = \\rho L/A$).\n3. What parameter is being doubled or halved in your problem? Substitute that directly into your ratio!`,
+      reply: `💡 **Lumi's Guiding Clue:**\n\n1. Always start by identifying what stays **constant** (e.g., in series: Current is constant; in parallel: Potential difference is constant; in stretching: Volume is constant).\n2. Write down the fundamental relation first ($I = n e A v_d$ or $R = \\rho L/A$).\n3. What parameter is being doubled or halved in your problem? Substitute that directly into your ratio!`,
       expression: "thinking",
       suggestedActions: ["Show worked calculation", "Test my understanding"],
     };

@@ -4,7 +4,7 @@ import LumiCharacter from "./LumiCharacter";
 /**
  * LumiSpeech - Character paired with contextual speech bubble
  */
-export default function MiloSpeech({
+export default function LumiSpeech({
   expression = "welcome",
   message = "",
   size = 72,

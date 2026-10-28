@@ -585,8 +585,8 @@ app.post("/api/assessment/start", (req, res) => {
       totalQuestions: session.totalTargetQuestions,
       currentNumber: 1,
       question: session.currentQuestion,
-      miloMessage: "Let's find your starting point! Don't worry about getting everything right—this helps me tailor your path.",
-      miloExpression: "welcome",
+      lumiMessage: "Let's find your starting point! Don't worry about getting everything right—this helps me tailor your path.",
+      lumiExpression: "welcome",
     },
   });
 });
@@ -670,7 +670,7 @@ app.post("/api/assessment/submit", (req, res) => {
   const isComplete = session.answers.length >= session.totalTargetQuestions;
 
   let nextQuestion = null;
-  let miloResponse = {
+  let lumiResponse = {
     message: isCorrect
       ? "Nice work! You've grasped this concept well."
       : "That's okay! Let's understand the idea behind this question.",
@@ -704,8 +704,8 @@ app.post("/api/assessment/submit", (req, res) => {
       feedback: answerRecord.feedback,
       explanation: originalQuestion.explanation,
       hint: originalQuestion.hint,
-      miloMessage: miloResponse.message,
-      miloExpression: miloResponse.expression,
+      lumiMessage: lumiResponse.message,
+      lumiExpression: lumiResponse.expression,
     },
     isComplete: session.status === "completed",
     nextQuestion: session.status === "completed" ? null : session.currentQuestion,
@@ -760,7 +760,7 @@ app.get("/api/assessment/results", (req, res) => {
       criticalGapsCount: criticalGaps.length,
       topRecommendation: criticalGaps.length > 0 ? criticalGaps[0] : (needsPractice[0] || allTopicConcepts[0]),
     },
-    miloGuidance: overallScore >= 70
+    lumiGuidance: overallScore >= 70
       ? "You have a solid foundation! Let's polish your tricky application concepts."
       : "We've pinpointed exactly where the friction is. Starting with focused interactive lessons will give you clarity quickly!",
   });
@@ -900,29 +900,29 @@ app.post("/api/lesson/action", (req, res) => {
       return res.json({
         type: "simplify",
         data: extensions.simplify,
-        miloExpression: "explaining",
-        miloMessage: "Here's an intuitive real-world analogy to make this crystal clear!",
+        lumiExpression: "explaining",
+        lumiMessage: "Here's an intuitive real-world analogy to make this crystal clear!",
       });
     case "another_example":
       return res.json({
         type: "another_example",
         data: extensions.anotherExample,
-        miloExpression: "thinking",
-        miloMessage: "Let's walk through another calculation step by step.",
+        lumiExpression: "thinking",
+        lumiMessage: "Let's walk through another calculation step by step.",
       });
     case "hint":
       return res.json({
         type: "hint",
         data: { hint: extensions.hint },
-        miloExpression: "curious",
-        miloMessage: "Here is the key clue you need to solve this!",
+        lumiExpression: "curious",
+        lumiMessage: "Here is the key clue you need to solve this!",
       });
     case "similar_question":
       return res.json({
         type: "similar_question",
         data: extensions.similarQuestion,
-        miloExpression: "curious",
-        miloMessage: "Give this challenge question a shot to lock in your understanding!",
+        lumiExpression: "curious",
+        lumiMessage: "Give this challenge question a shot to lock in your understanding!",
       });
     default:
       return res.status(400).json({ error: "Unknown action type" });
@@ -998,10 +998,10 @@ app.post("/api/practice/submit", (req, res) => {
     correctOptionId: q.options.find((o) => o.isCorrect)?.id,
     feedback: opt?.feedback || "",
     explanation: q.explanation,
-    miloMessage: isCorrect
+    lumiMessage: isCorrect
       ? "Great job! Practicing this concept is paying off."
       : "Keep at it! Review the explanation and try again.",
-    miloExpression: isCorrect ? "celebrating" : "encouraging",
+    lumiExpression: isCorrect ? "celebrating" : "encouraging",
   });
 });
 

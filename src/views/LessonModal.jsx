@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { X, HelpCircle, Sparkles, Calculator, ArrowRight } from "lucide-react";
-import MiloCharacter from "../components/MiloCharacter";
+import LumiCharacter from "../components/LumiCharacter";
 import Formula from "../components/Formula";
 import { fetchLesson, sendLessonAction, completeActivity, fetchTopicQuiz, submitTopicQuiz } from "../services/api";
 
@@ -19,9 +19,9 @@ export default function LessonModal({ lessonId, onClose, onLessonCompleted }) {
   const [quizSubmitting, setQuizSubmitting] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
 
-  // Milo state
-  const [miloExpression, setMiloExpression] = useState("explaining");
-  const [miloMessage, setMiloMessage] = useState("");
+  // Lumi state
+  const [lumiExpression, setLumiExpression] = useState("explaining");
+  const [lumiMessage, setLumiMessage] = useState("");
 
   useEffect(() => {
     async function load() {
@@ -29,8 +29,8 @@ export default function LessonModal({ lessonId, onClose, onLessonCompleted }) {
         const data = await fetchLesson(lessonId);
         if (data.lesson) {
           setLesson(data.lesson);
-          setMiloMessage(data.lesson.miloIntro || "Let's explore this concept step-by-step!");
-          setMiloExpression("explaining");
+          setLumiMessage(data.lesson.lumiIntro || "Let's explore this concept step-by-step!");
+          setLumiExpression("explaining");
         }
       } catch (err) {
         console.error("Error loading lesson:", err);
@@ -45,8 +45,8 @@ export default function LessonModal({ lessonId, onClose, onLessonCompleted }) {
   const handleAction = async (actionType) => {
     try {
       const res = await sendLessonAction({ lessonId, actionType });
-      if (res.miloExpression) setMiloExpression(res.miloExpression);
-      if (res.miloMessage) setMiloMessage(res.miloMessage);
+      if (res.lumiExpression) setLumiExpression(res.lumiExpression);
+      if (res.lumiMessage) setLumiMessage(res.lumiMessage);
 
       if (actionType === "simplify" && res.data) {
         setDynamicCards((prev) => [
@@ -104,11 +104,11 @@ export default function LessonModal({ lessonId, onClose, onLessonCompleted }) {
       });
       setTopicQuiz(data);
       setQuizStarted(true);
-      setMiloExpression("curious");
-      setMiloMessage(`Let's check what you learned about ${lesson.conceptName || lesson.title}.`);
+      setLumiExpression("curious");
+      setLumiMessage(`Let's check what you learned about ${lesson.conceptName || lesson.title}.`);
     } catch (err) {
       console.error("Topic quiz load error:", err);
-      setMiloMessage("I couldn't load the quiz just now. Please try again.");
+      setLumiMessage("I couldn't load the quiz just now. Please try again.");
     } finally {
       setQuizLoading(false);
     }
@@ -120,8 +120,8 @@ export default function LessonModal({ lessonId, onClose, onLessonCompleted }) {
     try {
       const result = await submitTopicQuiz({ topicId: lesson.conceptId, answers: quizAnswers });
       setQuizResult(result);
-      setMiloExpression(result.percentage >= 80 ? "celebrating" : "supportive");
-      setMiloMessage(result.judgmentVerdict);
+      setLumiExpression(result.percentage >= 80 ? "celebrating" : "supportive");
+      setLumiMessage(result.judgmentVerdict);
     } catch (err) {
       console.error("Topic quiz submit error:", err);
     } finally {
@@ -216,7 +216,7 @@ export default function LessonModal({ lessonId, onClose, onLessonCompleted }) {
 
         {/* Scrollable Content Body */}
         <div style={{ flex: 1, overflowY: "auto", padding: "24px" }}>
-          {/* Milo Introduction Banner */}
+          {/* Lumi Introduction Banner */}
           <div
             style={{
               display: "flex",
@@ -229,9 +229,9 @@ export default function LessonModal({ lessonId, onClose, onLessonCompleted }) {
               marginBottom: 24,
             }}
           >
-            <MiloCharacter expression={miloExpression} size={54} />
+            <LumiCharacter expression={lumiExpression} size={54} />
             <div style={{ flex: 1, fontSize: 14, color: "var(--text-primary)", lineHeight: 1.45, fontWeight: 500 }}>
-              {miloMessage}
+              {lumiMessage}
             </div>
           </div>
 
@@ -249,7 +249,7 @@ export default function LessonModal({ lessonId, onClose, onLessonCompleted }) {
             }}
           >
             <span style={{ fontSize: 12, fontWeight: 700, color: "var(--brand-primary)", alignSelf: "center", marginRight: 4 }}>
-              Milo's Tools:
+              Lumi's Tools:
             </span>
             <button
               onClick={() => handleAction("simplify")}
@@ -410,7 +410,7 @@ export default function LessonModal({ lessonId, onClose, onLessonCompleted }) {
           {!quizStarted && (
             <div style={{ padding: 22, marginTop: 24, border: "2px solid var(--border-brand)", borderRadius: "var(--radius-lg)", background: "var(--brand-primary-tint)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                <MiloCharacter expression="curious" size={48} />
+                <LumiCharacter expression="curious" size={48} />
                 <div style={{ flex: 1 }}>
                   <strong style={{ color: "var(--text-primary)" }}>Ready for a quick topic quiz?</strong>
                   <p style={{ margin: "4px 0 0", color: "var(--text-secondary)", fontSize: 13 }}>I’ll ask you about {lesson.conceptName || lesson.title} and explain the answer.</p>

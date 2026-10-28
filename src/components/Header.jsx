@@ -1,6 +1,6 @@
 import React from "react";
 import { Flame, Star, ChevronDown, Layers } from "lucide-react";
-import MiloCharacter from "./MiloCharacter";
+import LumiCharacter from "./LumiCharacter";
 
 export default function Header({
   profile,
@@ -130,8 +130,8 @@ export default function Header({
             borderRadius: "var(--radius-full)",
           }}
         >
-          <MiloCharacter expression="welcome" size={24} />
-          <span>Ask Milo</span>
+          <LumiCharacter expression="welcome" size={24} />
+          <span>Ask Lumi</span>
         </button>
       </div>
     </header>

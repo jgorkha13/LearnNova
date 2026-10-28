@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { X, Flame, Shield, CheckCircle2, Circle, Calendar, Trophy, Zap, Award } from "lucide-react";
-import MiloCharacter from "./MiloCharacter";
+import LumiCharacter from "./LumiCharacter";
 import { fetchStreakActivity } from "../services/api";
 
 export default function StreakModal({ isOpen, onClose }) {
@@ -361,7 +361,7 @@ export default function StreakModal({ isOpen, onClose }) {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <MiloCharacter expression="celebrating" size={32} />
+            <LumiCharacter expression="celebrating" size={32} />
             <span style={{ fontSize: 13, color: "var(--text-secondary)" }}>
               "Keep the flame burning every single day!"
             </span>

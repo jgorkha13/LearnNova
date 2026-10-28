@@ -9,7 +9,7 @@ export const LESSONS_DATA = {
       conceptName: "Electric Current & Drift Velocity",
       duration: "5 min",
       order: 1,
-      miloIntro: "Let's explore how trillions of electrons create a smooth, steady electric current!",
+      lumiIntro: "Let's explore how trillions of electrons create a smooth, steady electric current!",
       cards: [
         {
           id: "card_1",
@@ -80,7 +80,7 @@ export const LESSONS_DATA = {
       conceptName: "Ohm's Law & Resistivity Factors",
       duration: "6 min",
       order: 2,
-      miloIntro: "Let's uncover why resistance depends on what a wire is made of and how it is shaped!",
+      lumiIntro: "Let's uncover why resistance depends on what a wire is made of and how it is shaped!",
       cards: [
         {
           id: "card_1",
@@ -152,7 +152,7 @@ export const LESSONS_DATA = {
       conceptName: "Series & Parallel Resistor Networks",
       duration: "7 min",
       order: 3,
-      miloIntro: "Master how voltages divide in series and how currents split in parallel!",
+      lumiIntro: "Master how voltages divide in series and how currents split in parallel!",
       cards: [
         {
           id: "card_1",
@@ -211,7 +211,7 @@ export const LESSONS_DATA = {
       conceptName: "Galvanic Cells & Potentials",
       duration: "5 min",
       order: 1,
-      miloIntro: "Let's discover how spontaneous redox reactions produce a flow of electricity!",
+      lumiIntro: "Let's discover how spontaneous redox reactions produce a flow of electricity!",
       cards: [
         {
           id: "card_1",
@@ -271,7 +271,7 @@ export const LESSONS_DATA = {
       conceptName: "Coulomb's Law",
       duration: "5 min",
       order: 1,
-      miloIntro: "Let's examine how electric charges exert invisible forces across space!",
+      lumiIntro: "Let's examine how electric charges exert invisible forces across space!",
       cards: [
         {
           id: "card_1",
@@ -329,7 +329,7 @@ export const LESSONS_DATA = {
       conceptName: "Calculus & Integrals",
       duration: "6 min",
       order: 1,
-      miloIntro: "Let's connect slopes and areas under curves with the Fundamental Theorem!",
+      lumiIntro: "Let's connect slopes and areas under curves with the Fundamental Theorem!",
       cards: [
         {
           id: "card_1",
@@ -388,7 +388,7 @@ export const LESSONS_DATA = {
       conceptName: "Binary Search Trees",
       duration: "5 min",
       order: 1,
-      miloIntro: "Let's explore how binary search trees achieve lightning-fast O(log N) searches!",
+      lumiIntro: "Let's explore how binary search trees achieve lightning-fast O(log N) searches!",
       cards: [
         {
           id: "card_1",
@@ -450,7 +450,7 @@ export const LESSONS_DATA = {
       conceptName: "Agile & Scrum Sprints",
       duration: "6 min",
       order: 1,
-      miloIntro: "Let's explore how modern software engineering teams ship reliable value in 2-week agile sprint iterations!",
+      lumiIntro: "Let's explore how modern software engineering teams ship reliable value in 2-week agile sprint iterations!",
       cards: [
         {
           id: "card_1",
@@ -518,7 +518,7 @@ export const LESSONS_DATA = {
       conceptName: "SOLID Principles in Software Design",
       duration: "7 min",
       order: 2,
-      miloIntro: "Let's master the 5 SOLID engineering principles that separate spaghetti code from maintainable enterprise systems!",
+      lumiIntro: "Let's master the 5 SOLID engineering principles that separate spaghetti code from maintainable enterprise systems!",
       cards: [
         {
           id: "card_1",
@@ -579,7 +579,7 @@ export const LESSONS_DATA = {
       conceptName: "OSI 7-Layer Reference Model",
       duration: "6 min",
       order: 1,
-      miloIntro: "Let's demystify how your browser's HTTP request journeys down through operating system packets, network frames, and physical electrical pulses!",
+      lumiIntro: "Let's demystify how your browser's HTTP request journeys down through operating system packets, network frames, and physical electrical pulses!",
       cards: [
         {
           id: "card_1",
@@ -639,7 +639,7 @@ export const LESSONS_DATA = {
       conceptName: "Classless Inter-Domain Routing (CIDR)",
       duration: "7 min",
       order: 2,
-      miloIntro: "Let's master binary subnet masks, network IDs, and host calculation with foolproof shortcuts!",
+      lumiIntro: "Let's master binary subnet masks, network IDs, and host calculation with foolproof shortcuts!",
       cards: [
         {
           id: "card_1",
@@ -698,7 +698,7 @@ export const LESSONS_DATA = {
       conceptName: "Database Normalization & Functional Dependencies",
       duration: "7 min",
       order: 1,
-      miloIntro: "Let's explore why database normalization is essential to eradicate insertion, deletion, and update anomalies!",
+      lumiIntro: "Let's explore why database normalization is essential to eradicate insertion, deletion, and update anomalies!",
       cards: [
         {
           id: "card_1",
@@ -758,7 +758,7 @@ export const LESSONS_DATA = {
       conceptName: "Process Management & CPU Scheduling",
       duration: "6 min",
       order: 1,
-      miloIntro: "Let's explore how the operating system kernel coordinates processes, handles context switches, and schedules CPU execution!",
+      lumiIntro: "Let's explore how the operating system kernel coordinates processes, handles context switches, and schedules CPU execution!",
       cards: [
         {
           id: "card_1",
@@ -817,7 +817,7 @@ export const LESSONS_DATA = {
       conceptName: "Dynamic Programming Foundations",
       duration: "7 min",
       order: 1,
-      miloIntro: "Let's uncover the deep mechanics of Dynamic Programming: how remembering past subproblems turns exponential O(2^N) brute-force into lightning fast O(N·W) polynomial algorithms!",
+      lumiIntro: "Let's uncover the deep mechanics of Dynamic Programming: how remembering past subproblems turns exponential O(2^N) brute-force into lightning fast O(N·W) polynomial algorithms!",
       cards: [
         {
           id: "card_1",
@@ -877,7 +877,7 @@ export const LESSONS_DATA = {
       conceptName: "C Pointers & Memory Management",
       duration: "6 min",
       order: 1,
-      miloIntro: "Let's demystify memory addresses, pointer dereferencing, and dynamic heap allocation in C!",
+      lumiIntro: "Let's demystify memory addresses, pointer dereferencing, and dynamic heap allocation in C!",
       cards: [
         {
           id: "card_1",
@@ -960,7 +960,7 @@ export function getOrGenerateLesson(lessonId, requestedTopic = null) {
     conceptName: cleanTitle,
     duration: requestedTopic?.duration || "15 min",
     order: 1,
-    miloIntro: `Welcome! Let's learn ${cleanTitle}. Focus on the key ideas, then I’ll quiz you on this topic.`,
+    lumiIntro: `Welcome! Let's learn ${cleanTitle}. Focus on the key ideas, then I’ll quiz you on this topic.`,
     cards: [
       {
         id: "card_1",

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Award, CheckCircle, TrendingUp, Calendar, Zap, AlertCircle, Flame, Shield, CheckCircle2, Circle } from "lucide-react";
-import MiloCharacter from "../components/MiloCharacter";
+import LumiCharacter from "../components/LumiCharacter";
 import { fetchProgress, fetchStreakActivity } from "../services/api";
 
 export default function ProgressView({ onOpenTutor }) {
@@ -30,7 +30,7 @@ export default function ProgressView({ onOpenTutor }) {
   if (loading) {
     return (
       <div className="page-container" style={{ textAlign: "center", padding: "80px 20px" }}>
-        <MiloCharacter expression="thinking" size={80} />
+        <LumiCharacter expression="thinking" size={80} />
         <p style={{ marginTop: 16, color: "var(--text-secondary)" }}>
           Compiling your verified learning metrics...
         </p>
@@ -76,7 +76,7 @@ export default function ProgressView({ onOpenTutor }) {
 
   return (
     <div className="page-container">
-      {/* Top Milo Summary Card */}
+      {/* Top Lumi Summary Card */}
       <div
         className="card"
         style={{
@@ -87,7 +87,7 @@ export default function ProgressView({ onOpenTutor }) {
           marginBottom: 32,
         }}
       >
-        <MiloCharacter expression={masteredCount > 0 ? "celebrating" : "encouraging"} size={84} />
+        <LumiCharacter expression={masteredCount > 0 ? "celebrating" : "encouraging"} size={84} />
 
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 12, fontWeight: 700, color: "var(--brand-primary)", textTransform: "uppercase" }}>

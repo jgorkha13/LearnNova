@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { X, Send, Sparkles, BookOpen, HelpCircle } from "lucide-react";
-import MiloCharacter from "./MiloCharacter";
+import LumiCharacter from "./LumiCharacter";
 import { sendTutorMessage } from "../services/api";
 
 export default function TutorModal({ isOpen, onClose, profile, activeTopic = "Current Electricity" }) {
@@ -8,7 +8,7 @@ export default function TutorModal({ isOpen, onClose, profile, activeTopic = "Cu
     {
       id: "init_1",
       role: "assistant",
-      content: `Hey! I'm Milo, your AI companion. I'm tracking your progress in **${activeTopic}**.\n\nWhether you're puzzled by a formula, wondering why an answer was incorrect, or need a real-world analogy, ask me anytime!`,
+      content: `Hey! I'm Lumi, your AI companion. I'm tracking your progress in **${activeTopic}**.\n\nWhether you're puzzled by a formula, wondering why an answer was incorrect, or need a real-world analogy, ask me anytime!`,
       expression: "welcome",
       suggestedActions: [
         "Explain this concept simply",
@@ -120,11 +120,11 @@ export default function TutorModal({ isOpen, onClose, profile, activeTopic = "Cu
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <MiloCharacter expression={currentExpression} size={48} />
+            <LumiCharacter expression={currentExpression} size={48} />
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 <h3 style={{ fontSize: 16, fontWeight: 700, color: "var(--text-primary)" }}>
-                  Milo Tutor
+                  Lumi Tutor
                 </h3>
                 <span
                   style={{
@@ -247,7 +247,7 @@ export default function TutorModal({ isOpen, onClose, profile, activeTopic = "Cu
 
           {loading && (
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <MiloCharacter expression="thinking" size={36} />
+              <LumiCharacter expression="thinking" size={36} />
               <div
                 style={{
                   padding: "10px 14px",
@@ -258,7 +258,7 @@ export default function TutorModal({ isOpen, onClose, profile, activeTopic = "Cu
                   fontStyle: "italic",
                 }}
               >
-                Milo is thinking...
+                Lumi is thinking...
               </div>
             </div>
           )}
@@ -284,7 +284,7 @@ export default function TutorModal({ isOpen, onClose, profile, activeTopic = "Cu
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask Milo a question or request a hint..."
+            placeholder="Ask Lumi a question or request a hint..."
             disabled={loading}
             style={{
               flex: 1,
