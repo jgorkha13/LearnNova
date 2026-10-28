@@ -8,6 +8,7 @@ import StreakModal from "./components/StreakModal";
 
 // Views
 import LandingPage from "./views/LandingPage";
+import DashboardView from "./views/DashboardView";
 import Onboarding from "./views/Onboarding";
 import Assessment from "./views/Assessment";
 import DiagnosticReport from "./views/DiagnosticReport";
@@ -15,21 +16,25 @@ import LearnView from "./views/LearnView";
 import PracticeView from "./views/PracticeView";
 import ProgressView from "./views/ProgressView";
 import ProfileView from "./views/ProfileView";
+import LessonModal from "./views/LessonModal";
 
-import { fetchProfile, updateProfile, fetchProgress } from "./services/api";
+import { fetchProfile, updateProfile, fetchProgress, fetchStreakActivity } from "./services/api";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
   const [progress, setProgress] = useState(null);
+  const [streakDays, setStreakDays] = useState(7);
 
   // App Navigation & Workflow State
   // Mode: 'landing' | 'onboarding' | 'assessment' | 'diagnostic_report' | 'app'
   const [mode, setMode] = useState("landing");
-  const [activeTab, setActiveTab] = useState("learn"); // 'learn' | 'practice' | 'progress' | 'profile'
+  // ActiveTab: 'dashboard' | 'learn' | 'practice' | 'progress' | 'profile'
+  const [activeTab, setActiveTab] = useState("dashboard");
   const [isTutorOpen, setIsTutorOpen] = useState(false);
   const [isSubjectDashboardOpen, setIsSubjectDashboardOpen] = useState(false);
   const [isStreakModalOpen, setIsStreakModalOpen] = useState(false);
+  const [activeLessonId, setActiveLessonId] = useState(null);
   const [onboardingInitialData, setOnboardingInitialData] = useState({});
 
   // Initial Load
@@ -40,19 +45,23 @@ export default function App() {
         setProfile(pData.profile);
       }
 
-      const progData = await fetchProgress();
-      if (progData) {
-        setProgress(progData);
-      }
+      const [progData, streakData] = await Promise.all([
+        fetchProgress().catch(() => null),
+        fetchStreakActivity().catch(() => null),
+      ]);
+
+      if (progData) setProgress(progData);
+      if (streakData?.currentStreak) setStreakDays(streakData.currentStreak);
 
       // Check URL parameters for explicit view overrides
       const params = new URLSearchParams(window.location.search);
-      if (params.get("view") === "app") {
+      if (params.get("view") === "app" || params.get("view") === "dashboard") {
         setMode("app");
+        setActiveTab("dashboard");
       } else if (params.get("view") === "onboarding") {
         setMode("onboarding");
       } else {
-        // Default to the interactive Duolingo Landing Page
+        // Default to landing page for first-time / testing view, or app if requested
         setMode("landing");
       }
     } catch (err) {
@@ -119,10 +128,11 @@ export default function App() {
       const progData = await fetchProgress();
       if (progData) setProgress(progData);
       setMode("app");
-      setActiveTab("learn");
+      setActiveTab("dashboard");
     } catch (e) {
       console.warn("Sign in error:", e);
       setMode("app");
+      setActiveTab("dashboard");
     } finally {
       setLoading(false);
     }
@@ -155,7 +165,7 @@ export default function App() {
 
   const handleProceedToPath = () => {
     setMode("app");
-    setActiveTab("learn");
+    setActiveTab("dashboard");
   };
 
   const handleResetAll = () => {
@@ -222,7 +232,10 @@ export default function App() {
     return (
       <Assessment
         topicId={profile?.topicId || "current_electricity"}
-        onExit={() => setMode("app")}
+        onExit={() => {
+          setMode("app");
+          setActiveTab("dashboard");
+        }}
         onComplete={handleAssessmentComplete}
       />
     );
@@ -233,7 +246,7 @@ export default function App() {
     return (
       <div className="app-shell">
         <Navigation
-          activeTab="learn"
+          activeTab={activeTab}
           onSelectTab={(tab) => {
             setActiveTab(tab);
             setMode("app");
@@ -242,6 +255,7 @@ export default function App() {
           onOpenSubjectDashboard={() => setIsSubjectDashboardOpen(true)}
           onOpenStreakModal={() => setIsStreakModalOpen(true)}
           onViewLandingPage={() => setMode("landing")}
+          streakDays={streakDays}
         />
         <div className="main-content">
           <Header
@@ -279,7 +293,7 @@ export default function App() {
   // 4. Main Application Experience
   return (
     <div className="app-shell">
-      {/* Sidebar Navigation */}
+      {/* Sidebar Navigation (Matching exact screenshot layout) */}
       <Navigation
         activeTab={activeTab}
         onSelectTab={setActiveTab}
@@ -287,6 +301,7 @@ export default function App() {
         onOpenSubjectDashboard={() => setIsSubjectDashboardOpen(true)}
         onOpenStreakModal={() => setIsStreakModalOpen(true)}
         onViewLandingPage={() => setMode("landing")}
+        streakDays={streakDays}
       />
 
       {/* Main Workspace Area */}
@@ -300,7 +315,22 @@ export default function App() {
           onStartDiagnostic={() => setMode("assessment")}
         />
 
-        <main style={{ flex: 1 }}>
+        <main style={{ flex: 1, backgroundColor: "var(--bg-canvas)" }}>
+          {/* Dashboard Tab (Exact Replica + Enhanced Informative) */}
+          {activeTab === "dashboard" && (
+            <DashboardView
+              key={profile?.topicId}
+              profile={profile}
+              progress={progress}
+              onStartLesson={(lessonId) => setActiveLessonId(lessonId)}
+              onOpenTutor={(ctx) => setIsTutorOpen(true)}
+              onOpenStreakModal={() => setIsStreakModalOpen(true)}
+              onOpenSubjectDashboard={() => setIsSubjectDashboardOpen(true)}
+              onNavigateTo={(tab) => setActiveTab(tab)}
+              onStartDiagnostic={() => setMode("assessment")}
+            />
+          )}
+
           {activeTab === "learn" && (
             <LearnView
               key={profile?.topicId}
@@ -335,7 +365,19 @@ export default function App() {
         </main>
       </div>
 
-      {/* Modals & Drawers */}
+      {/* Interactive Lesson Modal */}
+      {activeLessonId && (
+        <LessonModal
+          lessonId={activeLessonId}
+          onClose={() => setActiveLessonId(null)}
+          onLessonCompleted={() => {
+            setActiveLessonId(null);
+            loadInitialData();
+          }}
+        />
+      )}
+
+      {/* Tutor & Curriculum Modals */}
       <TutorModal
         isOpen={isTutorOpen}
         onClose={() => setIsTutorOpen(false)}

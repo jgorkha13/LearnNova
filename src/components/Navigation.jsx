@@ -1,5 +1,18 @@
-import React from "react";
-import { BookOpen, Sparkles, TrendingUp, User, Layers, Flame, Compass } from "lucide-react";
+import React, { useState } from "react";
+import {
+  LayoutDashboard,
+  Compass,
+  Library,
+  Bot,
+  BarChart3,
+  Settings,
+  Sparkles,
+  TrendingUp,
+  Flame,
+  ArrowRight,
+  Shield,
+  Layers,
+} from "lucide-react";
 import LumiCharacter from "./LumiCharacter";
 
 export default function Navigation({
@@ -9,43 +22,68 @@ export default function Navigation({
   onOpenSubjectDashboard,
   onOpenStreakModal,
   onViewLandingPage,
+  streakDays = 7,
 }) {
+  const [smartMode, setSmartMode] = useState(true);
+
+  // Exact 6 items matching user's screenshot
   const navItems = [
-    { id: "learn", label: "Learn", icon: BookOpen },
-    { id: "practice", label: "Practice", icon: Sparkles },
-    { id: "progress", label: "Progress", icon: TrendingUp },
-    { id: "profile", label: "Profile", icon: User },
+    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { id: "learn", label: "Learning Path", icon: Compass },
+    { id: "library", label: "Content Library", icon: Library },
+    { id: "tutor", label: "AI Tutor", icon: Bot, isAction: true },
+    { id: "progress", label: "Analytics", icon: BarChart3 },
+    { id: "profile", label: "Settings", icon: Settings },
   ];
+
+  const handleItemClick = (item) => {
+    if (item.isAction) {
+      if (item.id === "tutor") onOpenTutor();
+      return;
+    }
+    if (item.id === "library") {
+      onOpenSubjectDashboard();
+      return;
+    }
+    onSelectTab(item.id);
+  };
 
   return (
     <>
-      {/* Desktop Sidebar / Rail */}
+      {/* Desktop Sidebar (Matching user's screenshot layout) */}
       <aside
         className="desktop-nav"
         style={{
-          width: 240,
+          width: 250,
           borderRight: "1px solid var(--border-light)",
           backgroundColor: "var(--bg-surface)",
           display: "flex",
           flexDirection: "column",
           padding: "24px 16px",
           flexShrink: 0,
+          height: "100vh",
+          position: "sticky",
+          top: 0,
+          overflowY: "auto",
         }}
       >
         {/* Brand Header */}
         <div
+          onClick={onViewLandingPage}
           style={{
             display: "flex",
             alignItems: "center",
             gap: 12,
-            padding: "0 12px 28px 12px",
+            padding: "0 10px 24px 10px",
             borderBottom: "1px solid var(--border-light)",
+            cursor: "pointer",
           }}
+          title="Click to view Landing Page"
         >
           <div
             style={{
-              width: 38,
-              height: 38,
+              width: 40,
+              height: 40,
               borderRadius: "var(--radius-md)",
               backgroundColor: "var(--brand-primary)",
               color: "#fff",
@@ -53,182 +91,198 @@ export default function Navigation({
               alignItems: "center",
               justifyContent: "center",
               fontWeight: 800,
-              fontSize: 20,
-              boxShadow: "0 2px 4px rgba(79, 70, 229, 0.3)",
+              fontSize: 18,
+              boxShadow: "0 2px 6px rgba(79, 70, 229, 0.3)",
             }}
           >
             LN
           </div>
           <div>
-            <h1 style={{ fontSize: 18, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.02em" }}>
+            <div style={{ fontSize: 17, fontWeight: 800, color: "var(--text-primary)", letterSpacing: "-0.02em" }}>
               LearnNova
-            </h1>
-            <p style={{ fontSize: 12, color: "var(--text-muted)", margin: 0 }}>
-              AI Learning Companion
-            </p>
+            </div>
+            <div style={{ fontSize: 11, color: "var(--text-muted)", fontWeight: 600 }}>
+              Personalized Learning
+            </div>
           </div>
         </div>
 
-        {/* Primary Navigation Items */}
-        <nav style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 24 }}>
+        {/* Primary Navigation Items (Exact screenshot layout with active blue pill) */}
+        <nav style={{ display: "flex", flexDirection: "column", gap: 4, marginTop: 20 }}>
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
             return (
               <button
                 key={item.id}
-                onClick={() => onSelectTab(item.id)}
+                onClick={() => handleItemClick(item)}
                 className={`nav-btn ${isActive ? "active" : ""}`}
                 style={{
                   display: "flex",
                   alignItems: "center",
                   gap: 14,
-                  padding: "12px 14px",
+                  padding: "10px 14px",
                   borderRadius: "var(--radius-md)",
-                  fontSize: 15,
+                  fontSize: 14,
                   fontWeight: isActive ? 700 : 500,
-                  color: isActive ? "var(--brand-primary)" : "var(--text-secondary)",
-                  backgroundColor: isActive ? "var(--brand-primary-tint)" : "transparent",
-                  border: "1px solid",
-                  borderColor: isActive ? "var(--brand-primary-border)" : "transparent",
+                  color: isActive ? "#2563EB" : "var(--text-secondary)",
+                  backgroundColor: isActive ? "#EFF6FF" : "transparent",
+                  border: "none",
                   transition: "all 0.15s ease",
                   textAlign: "left",
                   width: "100%",
+                  cursor: "pointer",
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.backgroundColor = "var(--bg-canvas)";
+                    e.currentTarget.style.color = "var(--text-primary)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "var(--text-secondary)";
+                  }
                 }}
               >
-                <Icon size={20} color={isActive ? "var(--brand-primary)" : "var(--text-muted)"} />
+                <Icon size={19} color={isActive ? "#2563EB" : "var(--text-muted)"} />
                 <span>{item.label}</span>
               </button>
             );
           })}
         </nav>
 
-        {/* Quick Tools Section */}
-        <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid var(--border-light)", display: "flex", flexDirection: "column", gap: 6 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", padding: "0 12px 4px 12px" }}>
-            Curriculum & Streaks
-          </div>
-
-          <button
-            onClick={onOpenSubjectDashboard}
+        {/* Divider & Lower Modules */}
+        <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: 14, paddingTop: 16 }}>
+          {/* Smart Mode Toggle (Matching Screenshot) */}
+          <div
             style={{
+              padding: "12px 14px",
+              backgroundColor: "var(--bg-canvas)",
+              borderRadius: "var(--radius-md)",
+              border: "1px solid var(--border-light)",
               display: "flex",
               alignItems: "center",
-              gap: 14,
-              padding: "10px 14px",
-              borderRadius: "var(--radius-md)",
-              fontSize: 14,
-              fontWeight: 600,
-              color: "var(--text-secondary)",
-              backgroundColor: "transparent",
-              border: "1px solid transparent",
-              transition: "all 0.15s ease",
-              textAlign: "left",
-              width: "100%",
-              cursor: "pointer",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "var(--bg-canvas)";
-              e.currentTarget.style.color = "var(--text-primary)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.color = "var(--text-secondary)";
+              justifyContent: "space-between",
             }}
           >
-            <Layers size={18} color="var(--brand-primary)" />
-            <span>Switch Subject</span>
-          </button>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: "50%",
+                  backgroundColor: "#EFF6FF",
+                  color: "#2563EB",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Sparkles size={16} />
+              </div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>
+                  Smart Mode
+                </div>
+                <div style={{ fontSize: 11, color: "var(--text-muted)" }}>
+                  AI-powered learning
+                </div>
+              </div>
+            </div>
 
-          <button
-            onClick={onOpenStreakModal}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 14,
-              padding: "10px 14px",
-              borderRadius: "var(--radius-md)",
-              fontSize: 14,
-              fontWeight: 600,
-              color: "var(--text-secondary)",
-              backgroundColor: "transparent",
-              border: "1px solid transparent",
-              transition: "all 0.15s ease",
-              textAlign: "left",
-              width: "100%",
-              cursor: "pointer",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#FEF3C7";
-              e.currentTarget.style.color = "#92400E";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.color = "var(--text-secondary)";
-            }}
-          >
-            <Flame size={18} color="#D97706" />
-            <span>Streak Heatmap</span>
-          </button>
-
-          {onViewLandingPage && (
-            <button
-              onClick={onViewLandingPage}
+            {/* Interactive Toggle Switch */}
+            <div
+              onClick={() => setSmartMode(!smartMode)}
               style={{
+                width: 38,
+                height: 22,
+                borderRadius: "var(--radius-full)",
+                backgroundColor: smartMode ? "#2563EB" : "var(--border-medium)",
                 display: "flex",
                 alignItems: "center",
-                gap: 14,
-                padding: "10px 14px",
-                borderRadius: "var(--radius-md)",
-                fontSize: 14,
-                fontWeight: 600,
-                color: "var(--text-secondary)",
-                backgroundColor: "transparent",
-                border: "1px solid transparent",
-                transition: "all 0.15s ease",
-                textAlign: "left",
-                width: "100%",
+                padding: "2px",
                 cursor: "pointer",
+                transition: "background-color 0.2s ease",
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "var(--brand-primary-tint)";
-                e.currentTarget.style.color = "var(--brand-primary)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "transparent";
-                e.currentTarget.style.color = "var(--text-secondary)";
-              }}
+              title="Toggle Socratic Smart Mode"
             >
-              <Compass size={18} color="var(--brand-primary)" />
-              <span>Landing Page</span>
-            </button>
-          )}
-        </div>
-
-        {/* Lumi Tutor Quick Launcher */}
-        <div
-          onClick={onOpenTutor}
-          style={{
-            marginTop: "auto",
-            padding: "14px",
-            backgroundColor: "var(--bg-canvas)",
-            border: "1px solid var(--border-light)",
-            borderRadius: "var(--radius-lg)",
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            cursor: "pointer",
-            transition: "all 0.2s ease",
-          }}
-          className="milo-launcher card-interactive"
-        >
-          <LumiCharacter expression="welcome" size={44} />
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>
-              Ask Lumi Tutor
+              <div
+                style={{
+                  width: 18,
+                  height: 18,
+                  borderRadius: "50%",
+                  backgroundColor: "#fff",
+                  transform: smartMode ? "translateX(16px)" : "translateX(0)",
+                  transition: "transform 0.2s ease",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+                }}
+              />
             </div>
-            <div style={{ fontSize: 11, color: "var(--text-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-              Get hints & simple analogies
+          </div>
+
+          {/* Learning Streak Module (Matching Screenshot) */}
+          <div
+            onClick={onOpenStreakModal}
+            style={{
+              padding: "14px",
+              backgroundColor: "var(--bg-canvas)",
+              borderRadius: "var(--radius-md)",
+              border: "1px solid var(--border-light)",
+              cursor: "pointer",
+              transition: "all 0.15s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "#F59E0B";
+              e.currentTarget.style.backgroundColor = "#FFFBEB";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = "var(--border-light)";
+              e.currentTarget.style.backgroundColor = "var(--bg-canvas)";
+            }}
+            title="Click to view LeetCode Streak Heatmap"
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+              <TrendingUp size={15} color="#D97706" />
+              <span style={{ fontSize: 12, fontWeight: 700, color: "var(--text-secondary)" }}>
+                Learning Streak
+              </span>
+            </div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: "var(--text-primary)", lineHeight: 1.1 }}>
+              {streakDays} days
+            </div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: "var(--text-muted)", marginTop: 4 }}>
+              Keep it up! 🔥
+            </div>
+          </div>
+
+          {/* Bottom Profile / Lumi Assistant Pill (Matching Screenshot) */}
+          <div
+            onClick={onViewLandingPage}
+            style={{
+              padding: "10px 12px",
+              backgroundColor: "var(--bg-surface)",
+              borderRadius: "var(--radius-md)",
+              border: "1px solid var(--border-light)",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              cursor: "pointer",
+              transition: "all 0.15s ease",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--brand-primary)")}
+            onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--border-light)")}
+            title="Click to view landing page & floating Lumi"
+          >
+            <LumiCharacter expression="welcome" size={36} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-primary)" }}>
+                Welcome back!
+              </div>
+              <div style={{ fontSize: 11, color: "var(--text-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                Ready to learn?
+              </div>
             </div>
           </div>
         </div>
@@ -259,16 +313,18 @@ export default function Navigation({
           return (
             <button
               key={item.id}
-              onClick={() => onSelectTab(item.id)}
+              onClick={() => handleItemClick(item)}
               style={{
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 gap: 4,
                 padding: "8px 12px",
-                color: isActive ? "var(--brand-primary)" : "var(--text-muted)",
+                color: isActive ? "#2563EB" : "var(--text-muted)",
                 fontSize: 11,
                 fontWeight: isActive ? 700 : 500,
+                border: "none",
+                backgroundColor: "transparent",
               }}
             >
               <Icon size={20} />
@@ -278,7 +334,6 @@ export default function Navigation({
         })}
       </nav>
 
-      {/* Media query styles */}
       <style>{`
         @media (max-width: 767px) {
           .desktop-nav {
