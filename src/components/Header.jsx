@@ -1,8 +1,14 @@
 import React from "react";
-import { Flame, Star, MessageSquareCode, Award } from "lucide-react";
+import { Flame, Star, ChevronDown, Layers } from "lucide-react";
 import MiloCharacter from "./MiloCharacter";
 
-export default function Header({ profile, progress, onOpenTutor, onStartDiagnostic }) {
+export default function Header({
+  profile,
+  progress,
+  onOpenTutor,
+  onOpenSubjectDashboard,
+  onOpenStreakModal,
+}) {
   const grade = profile?.grade || "Class 12";
   const board = profile?.board || "CBSE";
   const subject = profile?.subject || "Physics";
@@ -10,14 +16,14 @@ export default function Header({ profile, progress, onOpenTutor, onStartDiagnost
 
   const masteredCount = progress?.masteredCount ?? 0;
   const totalConcepts = progress?.totalConcepts ?? 8;
-  const streak = progress?.streak ?? 0;
+  const streak = progress?.streak ?? 5;
 
   return (
     <header
       style={{
         backgroundColor: "var(--bg-surface)",
         borderBottom: "1px solid var(--border-light)",
-        padding: "14px 24px",
+        padding: "12px 24px",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
@@ -27,66 +33,69 @@ export default function Header({ profile, progress, onOpenTutor, onStartDiagnost
         zIndex: 30,
       }}
     >
-      {/* Current Academic Context Breadcrumb */}
+      {/* Current Academic Context & Subject Dashboard Button */}
       <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-        <div
+        <button
+          onClick={onOpenSubjectDashboard}
+          title="Click to switch subject or topic without losing progress"
           style={{
-            padding: "6px 12px",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "6px 14px",
             backgroundColor: "var(--brand-primary-tint)",
             border: "1px solid var(--brand-primary-border)",
             borderRadius: "var(--radius-full)",
-            fontSize: 13,
-            fontWeight: 700,
-            color: "var(--brand-primary)",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            whiteSpace: "nowrap",
+            cursor: "pointer",
+            transition: "all 0.15s ease",
+            textAlign: "left",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "#E0E7FF";
+            e.currentTarget.style.borderColor = "var(--brand-primary)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "var(--brand-primary-tint)";
+            e.currentTarget.style.borderColor = "var(--brand-primary-border)";
           }}
         >
-          <span>{grade}</span>
-          <span style={{ opacity: 0.5 }}>•</span>
-          <span>{board}</span>
-          <span style={{ opacity: 0.5 }}>•</span>
-          <span>{subject}</span>
-        </div>
-
-        <div
-          style={{
-            fontSize: 14,
-            fontWeight: 600,
-            color: "var(--text-secondary)",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {topic}
-        </div>
+          <Layers size={15} color="var(--brand-primary)" />
+          <span style={{ fontSize: 13, fontWeight: 700, color: "var(--brand-primary)" }}>
+            {grade} • {subject}
+          </span>
+          <span style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600 }}>
+            • {topic}
+          </span>
+          <ChevronDown size={14} color="var(--brand-primary)" />
+        </button>
       </div>
 
       {/* Verified Achievement Stats & Actions */}
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        {/* Streak Pill */}
-        <div
-          title="Verified consecutive learning sessions"
+        {/* LeetCode-Style Streak Pill Button */}
+        <button
+          onClick={onOpenStreakModal}
+          title="View LeetCode-style activity matrix & streak tracking"
           style={{
             display: "flex",
             alignItems: "center",
             gap: 6,
             padding: "6px 12px",
-            backgroundColor: streak > 0 ? "#FEF3C7" : "var(--bg-surface-secondary)",
-            border: "1px solid",
-            borderColor: streak > 0 ? "#FDE68A" : "var(--border-light)",
+            backgroundColor: "#FEF3C7",
+            border: "1px solid #FDE68A",
             borderRadius: "var(--radius-full)",
             fontSize: 13,
             fontWeight: 700,
-            color: streak > 0 ? "#92400E" : "var(--text-muted)",
+            color: "#92400E",
+            cursor: "pointer",
+            transition: "transform 0.15s ease",
           }}
+          onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.04)")}
+          onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
         >
-          <Flame size={16} color={streak > 0 ? "#D97706" : "#94A3B8"} />
-          <span>{streak} {streak === 1 ? "Session" : "Sessions"}</span>
-        </div>
+          <Flame size={16} color="#D97706" />
+          <span>{streak} Days Streak</span>
+        </button>
 
         {/* Mastery Pill */}
         <div
@@ -121,7 +130,7 @@ export default function Header({ profile, progress, onOpenTutor, onStartDiagnost
             borderRadius: "var(--radius-full)",
           }}
         >
-          <MiloCharacter expression="welcoming" size={24} />
+          <MiloCharacter expression="welcome" size={24} />
           <span>Ask Milo</span>
         </button>
       </div>

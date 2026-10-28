@@ -3,6 +3,8 @@ import Navigation from "./components/Navigation";
 import Header from "./components/Header";
 import TutorModal from "./components/TutorModal";
 import MiloCharacter from "./components/MiloCharacter";
+import SubjectDashboardModal from "./components/SubjectDashboardModal";
+import StreakModal from "./components/StreakModal";
 
 // Views
 import Onboarding from "./views/Onboarding";
@@ -25,6 +27,8 @@ export default function App() {
   const [mode, setMode] = useState("app");
   const [activeTab, setActiveTab] = useState("learn"); // 'learn' | 'practice' | 'progress' | 'profile'
   const [isTutorOpen, setIsTutorOpen] = useState(false);
+  const [isSubjectDashboardOpen, setIsSubjectDashboardOpen] = useState(false);
+  const [isStreakModalOpen, setIsStreakModalOpen] = useState(false);
 
   // Initial Load
   const loadInitialData = async () => {
@@ -63,7 +67,6 @@ export default function App() {
     try {
       const data = await updateProfile({ ...newProfile, isOnboarded: true });
       setProfile(data.profile);
-      // Immediately launch diagnostic assessment to find starting level
       setMode("assessment");
     } catch (err) {
       console.error("Failed to complete onboarding:", err);
@@ -73,7 +76,6 @@ export default function App() {
   };
 
   const handleAssessmentComplete = async () => {
-    // Refresh progress and navigate to the diagnostic knowledge gap report
     try {
       const progData = await fetchProgress();
       if (progData) setProgress(progData);
@@ -92,6 +94,16 @@ export default function App() {
     setProfile(null);
     setProgress(null);
     setMode("onboarding");
+  };
+
+  const handleTopicSwitched = async (updatedProfile) => {
+    setProfile(updatedProfile);
+    try {
+      const progData = await fetchProgress();
+      if (progData) setProgress(progData);
+    } catch (err) {
+      console.warn("Could not reload progress:", err);
+    }
   };
 
   if (loading) {
@@ -142,12 +154,16 @@ export default function App() {
             setMode("app");
           }}
           onOpenTutor={() => setIsTutorOpen(true)}
+          onOpenSubjectDashboard={() => setIsSubjectDashboardOpen(true)}
+          onOpenStreakModal={() => setIsStreakModalOpen(true)}
         />
         <div className="main-content">
           <Header
             profile={profile}
             progress={progress}
             onOpenTutor={() => setIsTutorOpen(true)}
+            onOpenSubjectDashboard={() => setIsSubjectDashboardOpen(true)}
+            onOpenStreakModal={() => setIsStreakModalOpen(true)}
             onStartDiagnostic={() => setMode("assessment")}
           />
           <DiagnosticReport
@@ -161,6 +177,15 @@ export default function App() {
           profile={profile}
           activeTopic={profile?.topic || "Current Electricity"}
         />
+        <SubjectDashboardModal
+          isOpen={isSubjectDashboardOpen}
+          onClose={() => setIsSubjectDashboardOpen(false)}
+          onTopicSwitched={handleTopicSwitched}
+        />
+        <StreakModal
+          isOpen={isStreakModalOpen}
+          onClose={() => setIsStreakModalOpen(false)}
+        />
       </div>
     );
   }
@@ -173,6 +198,8 @@ export default function App() {
         activeTab={activeTab}
         onSelectTab={setActiveTab}
         onOpenTutor={() => setIsTutorOpen(true)}
+        onOpenSubjectDashboard={() => setIsSubjectDashboardOpen(true)}
+        onOpenStreakModal={() => setIsStreakModalOpen(true)}
       />
 
       {/* Main Workspace Area */}
@@ -181,12 +208,15 @@ export default function App() {
           profile={profile}
           progress={progress}
           onOpenTutor={() => setIsTutorOpen(true)}
+          onOpenSubjectDashboard={() => setIsSubjectDashboardOpen(true)}
+          onOpenStreakModal={() => setIsStreakModalOpen(true)}
           onStartDiagnostic={() => setMode("assessment")}
         />
 
         <main style={{ flex: 1 }}>
           {activeTab === "learn" && (
             <LearnView
+              key={profile?.topicId}
               onStartDiagnostic={() => setMode("assessment")}
               onOpenTutor={() => setIsTutorOpen(true)}
             />
@@ -194,13 +224,17 @@ export default function App() {
 
           {activeTab === "practice" && (
             <PracticeView
+              key={profile?.topicId}
               onOpenTutor={() => setIsTutorOpen(true)}
               onStartDiagnostic={() => setMode("assessment")}
             />
           )}
 
           {activeTab === "progress" && (
-            <ProgressView onOpenTutor={() => setIsTutorOpen(true)} />
+            <ProgressView
+              key={profile?.topicId}
+              onOpenTutor={() => setIsTutorOpen(true)}
+            />
           )}
 
           {activeTab === "profile" && (
@@ -213,12 +247,21 @@ export default function App() {
         </main>
       </div>
 
-      {/* Dedicated AI Tutor Companion Drawer */}
+      {/* Modals & Drawers */}
       <TutorModal
         isOpen={isTutorOpen}
         onClose={() => setIsTutorOpen(false)}
         profile={profile}
         activeTopic={profile?.topic || "Current Electricity"}
+      />
+      <SubjectDashboardModal
+        isOpen={isSubjectDashboardOpen}
+        onClose={() => setIsSubjectDashboardOpen(false)}
+        onTopicSwitched={handleTopicSwitched}
+      />
+      <StreakModal
+        isOpen={isStreakModalOpen}
+        onClose={() => setIsStreakModalOpen(false)}
       />
     </div>
   );

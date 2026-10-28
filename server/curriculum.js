@@ -46,7 +46,7 @@ export const CURRICULUM_DATA = {
             { id: "solutions", name: "Solutions", recommended: false },
           ],
           Mathematics: [
-            { id: "calculus_integrals", name: "Integrals", recommended: true },
+            { id: "calculus_integrals", name: "Calculus & Integrals", recommended: true },
             { id: "matrices", name: "Matrices & Determinants", recommended: false },
           ],
         },
@@ -90,7 +90,7 @@ export const CURRICULUM_DATA = {
     },
   },
 
-  // Granular concept tree for Current Electricity
+  // Granular concept trees for specific subjects
   concepts: {
     current_electricity: [
       {
@@ -150,9 +150,112 @@ export const CURRICULUM_DATA = {
         weight: 3,
       },
     ],
+
+    electrochemistry: [
+      {
+        id: "galvanic_cells_potential",
+        name: "Galvanic Cells & Standard Reduction Potentials",
+        description: "Anode (oxidation), cathode (reduction), salt bridge, and cell EMF E°_cell = E°_cathode - E°_anode",
+        level: "Foundational",
+        weight: 1,
+      },
+      {
+        id: "nernst_equation",
+        name: "Nernst Equation & Equilibrium Constant",
+        description: "Dependence of cell potential on concentration and temperature: E = E° - (0.0591/n) log Q",
+        level: "Intermediate",
+        weight: 2,
+      },
+      {
+        id: "kohlrausch_conductivity",
+        name: "Kohlrausch's Law of Independent Migration",
+        description: "Molar conductivity at infinite dilution and degree of dissociation for weak electrolytes",
+        level: "Intermediate",
+        weight: 2,
+      },
+      {
+        id: "faraday_electrolysis",
+        name: "Faraday's Laws of Electrolysis",
+        description: "Mass deposited m = Z·I·t = (M·I·t)/(n·F) where F = 96,485 C/mol",
+        level: "Advanced",
+        weight: 3,
+      },
+    ],
+
+    electrostatics: [
+      {
+        id: "coulombs_law_fields",
+        name: "Coulomb's Law & Principle of Superposition",
+        description: "Electrostatic force F = k|q1 q2|/r² in vector form and electric field due to point charges",
+        level: "Foundational",
+        weight: 1,
+      },
+      {
+        id: "gauss_law_flux",
+        name: "Electric Flux & Gauss's Law Applications",
+        description: "Net electric flux through closed surface Φ = ∮ E · dA = q_enclosed / ε₀",
+        level: "Intermediate",
+        weight: 2,
+      },
+      {
+        id: "capacitance_dielectrics",
+        name: "Capacitance & Dielectric Slabs",
+        description: "Parallel plate capacitor C = ε₀A/d and insertion of dielectric of constant K: C' = KC₀",
+        level: "Advanced",
+        weight: 3,
+      },
+    ],
+
+    calculus_integrals: [
+      {
+        id: "fundamental_theorem_calculus",
+        name: "Fundamental Theorem of Calculus & Standard Forms",
+        description: "Antiderivatives, definite integrals as limits of Riemann sums, and standard integration rules",
+        level: "Foundational",
+        weight: 1,
+      },
+      {
+        id: "integration_substitution",
+        name: "Method of Substitution (u-substitution)",
+        description: "Transforming integrals of form ∫ f(g(x)) g'(x) dx into ∫ f(u) du",
+        level: "Intermediate",
+        weight: 2,
+      },
+      {
+        id: "integration_by_parts",
+        name: "Integration by Parts (ILATE Rule)",
+        description: "Formula ∫ u dv = u v - ∫ v du and selection priority Inverse, Log, Algebraic, Trig, Exponential",
+        level: "Advanced",
+        weight: 3,
+      },
+    ],
+
+    binary_search_trees: [
+      {
+        id: "bst_properties_invariant",
+        name: "BST Ordering Invariant & Searching",
+        description: "Left subtree keys < Node key < Right subtree keys; O(h) search and insertion",
+        level: "Foundational",
+        weight: 1,
+      },
+      {
+        id: "bst_traversals",
+        name: "In-order, Pre-order & Post-order Traversals",
+        description: "In-order traversal produces strictly ascending sorted keys in O(N) time",
+        level: "Intermediate",
+        weight: 2,
+      },
+      {
+        id: "bst_deletion_balancing",
+        name: "Node Deletion & In-order Successor",
+        description: "Deleting nodes with 0, 1, or 2 children; replacing with in-order successor (min of right subtree)",
+        level: "Advanced",
+        weight: 3,
+      },
+    ],
   },
 
-  // Diagnostic questions for Class 12 CBSE / JEE Current Electricity
+  // Diagnostic questions indexed by topic
   diagnosticQuestions: {
     current_electricity: [
       {
@@ -245,35 +348,137 @@ export const CURRICULUM_DATA = {
         explanation: "KCL (Kirchhoff's Current Law / Junction Rule): Total current in = total current out at a node, derived from the law of Conservation of Electric Charge. KVL (Kirchhoff's Voltage Law / Loop Rule): Around any closed path, the algebraic sum of potential changes is zero, derived from the law of Conservation of Energy in a conservative electric field.",
         hint: "What can never be created or destroyed at an electrical intersection, and what conservative property determines work around a closed loop?",
       },
+    ],
+
+    electrochemistry: [
       {
-        id: "diag_ce_07",
-        conceptId: "wheatstone_bridge",
-        conceptName: "Wheatstone Bridge Principle",
-        difficulty: 3,
-        question: "In a Wheatstone bridge ABCD, four resistors P = 10 Ω, Q = 20 Ω, R = 15 Ω, and S are arranged in arms AB, BC, AD, and DC. A sensitive galvanometer is connected between B and D. What must be the value of S for the galvanometer to show null deflection?",
+        id: "diag_ec_01",
+        conceptId: "galvanic_cells_potential",
+        conceptName: "Galvanic Cells & Standard Reduction Potentials",
+        difficulty: 1,
+        question: "Given standard reduction potentials E°(Zn²⁺/Zn) = -0.76 V and E°(Cu²⁺/Cu) = +0.34 V, what is the standard EMF of the Daniel Cell under standard conditions?",
         options: [
-          { id: "A", text: "30 Ω", isCorrect: true, feedback: "Outstanding! At balance, no current flows through galvanometer BD: P / Q = R / S. Therefore, S = (Q × R) / P = (20 × 15) / 10 = 30 Ω." },
-          { id: "B", text: "7.5 Ω", isCorrect: false, feedback: "Incorrect. Check the ratio: P/Q = 10/20 = 1/2. For balance, R/S must also equal 1/2. If R = 15, S must be twice that." },
-          { id: "C", text: "25 Ω", isCorrect: false, feedback: "Incorrect. That would give 15/25 = 0.6, which does not match 10/20 = 0.5." },
-          { id: "D", text: "13.3 Ω", isCorrect: false, feedback: "Incorrect. You may have inverted the bridge formula." },
+          { id: "A", text: "+1.10 V", isCorrect: true, feedback: "Correct! E°_cell = E°_cathode - E°_anode = +0.34 V - (-0.76 V) = +1.10 V. Zinc is oxidized at the anode, and Copper is reduced at the cathode." },
+          { id: "B", text: "+0.42 V", isCorrect: false, feedback: "Incorrect. You subtracted 0.34 - 0.76 instead of taking minus of negative 0.76 V." },
+          { id: "C", text: "-1.10 V", isCorrect: false, feedback: "Incorrect. A spontaneous galvanic cell must have a positive standard cell EMF." },
+          { id: "D", text: "+0.55 V", isCorrect: false, feedback: "Incorrect arithmetic." },
         ],
-        explanation: "The condition for a balanced Wheatstone bridge is V_B = V_D, which means no current passes through the galvanometer arm. This occurs when P/Q = R/S. Solving for S: S = R · (Q/P) = 15 Ω × (20 Ω / 10 Ω) = 15 × 2 = 30 Ω.",
-        hint: "The bridge is balanced when opposite products are equal: P · S = Q · R.",
+        explanation: "In a galvanic cell, oxidation occurs at anode (lower reduction potential: Zn) and reduction at cathode (higher reduction potential: Cu). E°_cell = E°_cathode - E°_anode = 0.34 - (-0.76) = +1.10 V.",
+        hint: "Cathode minus Anode: the more positive potential acts as the cathode.",
       },
       {
-        id: "diag_ce_08",
-        conceptId: "electric_power_energy",
-        conceptName: "Electrical Energy, Power & Maximum Power Transfer",
-        difficulty: 3,
-        question: "A power source with fixed EMF E and internal resistance r is connected to a variable external load resistance R. Under what condition is maximum electrical power delivered to the external load R?",
+        id: "diag_ec_02",
+        conceptId: "nernst_equation",
+        conceptName: "Nernst Equation & Cell Potential",
+        difficulty: 2,
+        question: "According to the Nernst equation at 298 K, if the concentration of Zn²⁺ at the anode is increased by a factor of 10 while keeping Cu²⁺ constant, what happens to the cell potential E_cell?",
         options: [
-          { id: "A", text: "When load resistance equals internal resistance (R = r)", isCorrect: true, feedback: "Superb! By the Maximum Power Transfer Theorem, power to the load P(R) = [E/(R+r)]² · R. Differentiating dP/dR and setting to 0 yields R = r, giving maximum power P_max = E² / (4r)." },
-          { id: "B", text: "When load resistance approaches zero (R → 0)", isCorrect: false, feedback: "Incorrect. When R → 0 (short circuit), current is maximum, but voltage across load is 0, so power P = I²R = 0." },
-          { id: "C", text: "When load resistance approaches infinity (R → ∞)", isCorrect: false, feedback: "Incorrect. When R → ∞ (open circuit), voltage across load is E, but current is 0, so power delivered is 0." },
-          { id: "D", text: "When load resistance is twice internal resistance (R = 2r)", isCorrect: false, feedback: "Incorrect. R = r provides the exact balance between current and terminal voltage." },
+          { id: "A", text: "Decreases by approximately 0.0295 V", isCorrect: true, feedback: "Spot on! E = E° - (0.0591/n) log ([Zn²⁺]/[Cu²⁺]). Since n = 2 for Zn-Cu, a 10-fold increase in product [Zn²⁺] increases log Q by 1, subtracting 0.0591/2 ≈ 0.0295 V." },
+          { id: "B", text: "Increases by 0.0591 V", isCorrect: false, feedback: "Incorrect. Increasing anode product concentration opposes forward reaction, lowering cell voltage." },
+          { id: "C", text: "Remains strictly constant", isCorrect: false, feedback: "Incorrect. Cell potential varies with ion concentration according to the Nernst equation." },
+          { id: "D", text: "Decreases by 0.0591 V", isCorrect: false, feedback: "Don't forget that 2 electrons are transferred (n = 2) in Daniel cell." },
         ],
-        explanation: "Power delivered to load is P = I²R = [E / (R + r)]² R. To find the maximum, set dP/dR = 0: d/dR [ R / (R + r)² ] = [(R+r)² - 2R(R+r)] / (R+r)⁴ = 0 ⇒ (R + r) - 2R = 0 ⇒ R = r. At this matching condition, maximum power transferred is P_max = E² / (4r).",
-        hint: "Consider what happens to power at the two extremes: when R is tiny (short circuit) and when R is huge (open circuit). Where is the peak?",
+        explanation: "E = E° - (0.0591/2) log(Q). When [Zn²⁺] increases by 10, ΔE = -(0.0591/2) log(10) = -0.0295 V.",
+        hint: "Does adding more reaction products make the battery produce more or less voltage?",
+      },
+      {
+        id: "diag_ec_03",
+        conceptId: "kohlrausch_conductivity",
+        conceptName: "Kohlrausch's Law of Independent Migration",
+        difficulty: 2,
+        question: "Why does molar conductivity (Λ_m) of a weak electrolyte (like acetic acid, CH₃COOH) increase sharply on steep dilution, whereas a strong electrolyte (KCl) increases only marginally?",
+        options: [
+          { id: "A", text: "Dilution sharply increases the degree of dissociation (α) of the weak electrolyte", isCorrect: true, feedback: "Correct! By Ostwald's dilution law, for weak electrolytes, dilution drastically increases the fraction of molecules ionized into conducting ions." },
+          { id: "B", text: "Dilution changes the molecular mass of the electrolyte", isCorrect: false, feedback: "Incorrect. Molar mass is a fixed physical constant." },
+          { id: "C", text: "Strong electrolytes undergo covalent bonding on dilution", isCorrect: false, feedback: "Incorrect. Strong electrolytes are already 100% dissociated even at moderate concentrations." },
+          { id: "D", text: "The temperature of the solution doubles on dilution", isCorrect: false, feedback: "Incorrect. Dilution is carried out isothermally." },
+        ],
+        explanation: "Strong electrolytes are already completely ionized (α ≈ 1), so dilution only reduces interionic friction. In weak electrolytes, dilution shifts dissociation equilibrium forward: α = √(K_a / c), causing a massive surge in free ions.",
+        hint: "Recall Ostwald's Dilution Law: how does dissociation α behave when concentration c approaches 0?",
+      },
+    ],
+
+    electrostatics: [
+      {
+        id: "diag_es_01",
+        conceptId: "coulombs_law_fields",
+        conceptName: "Coulomb's Law & Principle of Superposition",
+        difficulty: 1,
+        question: "Two identical point charges separated by distance r in vacuum exert an electrostatic force F on each other. If the distance between them is doubled (2r) and the medium is replaced with water (dielectric constant K = 80), what is the new force?",
+        options: [
+          { id: "A", text: "F / 320", isCorrect: true, feedback: "Outstanding! F' = F / (K · (r'/r)²) = F / (80 × 2²) = F / 320." },
+          { id: "B", text: "F / 160", isCorrect: false, feedback: "Remember that distance is squared: (2)² = 4, so 80 × 4 = 320." },
+          { id: "C", text: "4F / 80", isCorrect: false, feedback: "Increasing distance reduces force, not increases." },
+          { id: "D", text: "F / 80", isCorrect: false, feedback: "You only accounted for the dielectric constant, ignoring distance doubling." },
+        ],
+        explanation: "By Coulomb's Law: F = (1 / 4πε₀K) · (q₁q₂ / r²). When distance doubles, factor is 1/4. Dielectric water reduces it by factor 1/80. Total factor = 1/(80 × 4) = 1/320.",
+        hint: "Force is inversely proportional to both dielectric constant K and distance squared r².",
+      },
+      {
+        id: "diag_es_02",
+        conceptId: "gauss_law_flux",
+        conceptName: "Electric Flux & Gauss's Law Applications",
+        difficulty: 2,
+        question: "A closed cubical Gaussian surface of edge length a encloses an electric dipole consisting of charges +q and -q separated by distance d. What is the net electric flux passing through the cube?",
+        options: [
+          { id: "A", text: "Zero", isCorrect: true, feedback: "Correct! By Gauss's Law, Φ_net = q_enclosed / ε₀. For an electric dipole, q_net = (+q) + (-q) = 0, so total outgoing flux is exactly zero." },
+          { id: "B", text: "2q / ε₀", isCorrect: false, feedback: "Charges have opposite signs and cancel algebraically inside the Gaussian surface." },
+          { id: "C", text: "q / (6ε₀)", isCorrect: false, feedback: "That applies to a single monopole charge through one cube face, not a dipole." },
+          { id: "D", text: "q · d / ε₀", isCorrect: false, feedback: "qd is dipole moment, but flux depends on total enclosed charge." },
+        ],
+        explanation: "Gauss's law states that total electric flux equals algebraic sum of enclosed charges divided by ε₀: Φ = Σ q_in / ε₀. Since (+q) + (-q) = 0, net flux is 0.",
+        hint: "What is the net total charge of an electric dipole?",
+      },
+    ],
+
+    calculus_integrals: [
+      {
+        id: "diag_int_01",
+        conceptId: "fundamental_theorem_calculus",
+        conceptName: "Fundamental Theorem of Calculus & Standard Forms",
+        difficulty: 1,
+        question: "Evaluate the definite integral ∫ from 0 to π/2 of cos(x) dx.",
+        options: [
+          { id: "A", text: "1", isCorrect: true, feedback: "Correct! The antiderivative of cos(x) is sin(x). Evaluating from 0 to π/2 gives sin(π/2) - sin(0) = 1 - 0 = 1." },
+          { id: "B", text: "0", isCorrect: false, feedback: "sin(π/2) is 1, not 0." },
+          { id: "C", text: "-1", isCorrect: false, feedback: "Derivative of cos is -sin, but integral of cos is +sin." },
+          { id: "D", text: "π / 2", isCorrect: false, feedback: "Incorrect. Review standard trigonometric antiderivatives." },
+        ],
+        explanation: "∫ cos(x) dx = sin(x) + C. [sin(x)] from 0 to π/2 = sin(π/2) - sin(0) = 1 - 0 = 1.",
+        hint: "Whose derivative is cos(x)?",
+      },
+      {
+        id: "diag_int_02",
+        conceptId: "integration_by_parts",
+        conceptName: "Integration by Parts (ILATE Rule)",
+        difficulty: 2,
+        question: "When integrating ∫ x · e^(2x) dx using integration by parts (∫ u dv = u v - ∫ v du), what is the best choice for u according to the ILATE rule?",
+        options: [
+          { id: "A", text: "u = x (Algebraic before Exponential)", isCorrect: true, feedback: "Spot on! In ILATE (Inverse, Log, Algebraic, Trig, Exponential), Algebraic x precedes Exponential e^(2x). Differentiating u gives du = dx, which simplifies the remaining integral." },
+          { id: "B", text: "u = e^(2x)", isCorrect: false, feedback: "Choosing u = e^(2x) would force integrating x to x²/2, making the power higher instead of simpler." },
+          { id: "C", text: "u = 2x", isCorrect: false, feedback: "2x is inside the exponent, not a factor of the product." },
+          { id: "D", text: "u = 1", isCorrect: false, feedback: "Incorrect." },
+        ],
+        explanation: "ILATE priority: Algebraic (A: x) comes before Exponential (E: e^(2x)). Set u = x ⇒ du = dx, and dv = e^(2x)dx ⇒ v = e^(2x)/2. Result = (x/2)e^(2x) - (1/4)e^(2x) + C.",
+        hint: "Choose u so that differentiating it reduces its degree.",
+      },
+    ],
+
+    binary_search_trees: [
+      {
+        id: "diag_bst_01",
+        conceptId: "bst_properties_invariant",
+        conceptName: "BST Ordering Invariant & Searching",
+        difficulty: 1,
+        question: "In a valid Binary Search Tree (BST) containing unique integer keys, where is the minimum element always located?",
+        options: [
+          { id: "A", text: "The leftmost node in the tree", isCorrect: true, feedback: "Correct! By the BST invariant, left child keys are always smaller than the parent. Repeatedly following left child pointers until reaching a node with no left child leads directly to the minimum key." },
+          { id: "B", text: "The root node", isCorrect: false, feedback: "The root is between its left and right subtrees, not the minimum." },
+          { id: "C", text: "The rightmost leaf", isCorrect: false, feedback: "The rightmost node contains the maximum key." },
+          { id: "D", text: "Any leaf node at random", isCorrect: false, feedback: "BSTs are strictly ordered, so min location is deterministic." },
+        ],
+        explanation: "BST property: for every node X, all keys in left subtree are < key(X). Therefore, traveling left from the root until left is null guarantees finding the absolute minimum in O(height) time.",
+        hint: "If left children are always smaller, keep walking left!",
       },
     ],
   },

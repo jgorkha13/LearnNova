@@ -1,8 +1,14 @@
 import React from "react";
-import { BookOpen, Sparkles, TrendingUp, User } from "lucide-react";
+import { BookOpen, Sparkles, TrendingUp, User, Layers, Flame } from "lucide-react";
 import MiloCharacter from "./MiloCharacter";
 
-export default function Navigation({ activeTab, onSelectTab, onOpenTutor }) {
+export default function Navigation({
+  activeTab,
+  onSelectTab,
+  onOpenTutor,
+  onOpenSubjectDashboard,
+  onOpenStreakModal,
+}) {
   const navItems = [
     { id: "learn", label: "Learn", icon: BookOpen },
     { id: "practice", label: "Practice", icon: Sparkles },
@@ -63,7 +69,7 @@ export default function Navigation({ activeTab, onSelectTab, onOpenTutor }) {
         </div>
 
         {/* Primary Navigation Items */}
-        <nav style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 24, flex: 1 }}>
+        <nav style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 24 }}>
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -96,6 +102,75 @@ export default function Navigation({ activeTab, onSelectTab, onOpenTutor }) {
           })}
         </nav>
 
+        {/* Quick Tools Section */}
+        <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid var(--border-light)", display: "flex", flexDirection: "column", gap: 6 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", padding: "0 12px 4px 12px" }}>
+            Curriculum & Streaks
+          </div>
+
+          <button
+            onClick={onOpenSubjectDashboard}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 14,
+              padding: "10px 14px",
+              borderRadius: "var(--radius-md)",
+              fontSize: 14,
+              fontWeight: 600,
+              color: "var(--text-secondary)",
+              backgroundColor: "transparent",
+              border: "1px solid transparent",
+              transition: "all 0.15s ease",
+              textAlign: "left",
+              width: "100%",
+              cursor: "pointer",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "var(--bg-canvas)";
+              e.currentTarget.style.color = "var(--text-primary)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.color = "var(--text-secondary)";
+            }}
+          >
+            <Layers size={18} color="var(--brand-primary)" />
+            <span>Switch Subject</span>
+          </button>
+
+          <button
+            onClick={onOpenStreakModal}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 14,
+              padding: "10px 14px",
+              borderRadius: "var(--radius-md)",
+              fontSize: 14,
+              fontWeight: 600,
+              color: "var(--text-secondary)",
+              backgroundColor: "transparent",
+              border: "1px solid transparent",
+              transition: "all 0.15s ease",
+              textAlign: "left",
+              width: "100%",
+              cursor: "pointer",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#FEF3C7";
+              e.currentTarget.style.color = "#92400E";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.color = "var(--text-secondary)";
+            }}
+          >
+            <Flame size={18} color="#D97706" />
+            <span>Streak Heatmap</span>
+          </button>
+        </div>
+
         {/* Milo Tutor Quick Launcher */}
         <div
           onClick={onOpenTutor}
@@ -113,7 +188,7 @@ export default function Navigation({ activeTab, onSelectTab, onOpenTutor }) {
           }}
           className="milo-launcher card-interactive"
         >
-          <MiloCharacter expression="welcoming" size={44} />
+          <MiloCharacter expression="welcome" size={44} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>
               Ask Milo Tutor

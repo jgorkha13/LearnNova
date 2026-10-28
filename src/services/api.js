@@ -48,6 +48,28 @@ export async function updateProfile(profileUpdates) {
   }
 }
 
+export async function fetchTopicsDashboard() {
+  const res = await fetch(`${BASE_URL}/api/topics-dashboard`);
+  if (!res.ok) throw new Error("Failed to fetch topics dashboard");
+  return await res.json();
+}
+
+export async function switchTopic({ subject, topic, topicId, grade, board }) {
+  const res = await fetch(`${BASE_URL}/api/switch-topic`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ subject, topic, topicId, grade, board }),
+  });
+  if (!res.ok) throw new Error("Failed to switch topic");
+  return await res.json();
+}
+
+export async function fetchStreakActivity() {
+  const res = await fetch(`${BASE_URL}/api/streak-activity`);
+  if (!res.ok) throw new Error("Failed to fetch streak activity");
+  return await res.json();
+}
+
 export async function startAssessment(topicId) {
   try {
     const res = await fetch(`${BASE_URL}/api/assessment/start`, {
