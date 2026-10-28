@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+import { neon } from "@neondatabase/serverless";
 import { CURRICULUM_DATA } from "./curriculum.js";
 import { LESSONS_DATA, getOrGenerateLesson } from "./lessonsData.js";
 import { DOMAINS, HIERARCHICAL_CURRICULUM } from "./hierarchicalCurriculum.js";
@@ -17,7 +18,7 @@ const __dirname = path.dirname(__filename);
 const DATA_DIR = path.join(__dirname, "data");
 const STORE_FILE = path.join(DATA_DIR, "store.json");
 
-if (!fs.existsSync(DATA_DIR)) {
+if (!process.env.VERCEL && !fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
@@ -51,13 +52,14 @@ function generateSeedHistory() {
 const initialData = {
   profile: {
     isOnboarded: false,
-    category: "school",
+    category: "college",
     name: "Alex",
-    grade: "Class 12",
+    grade: "B.Tech CSE - 1st Year",
     board: "CBSE",
-    subject: "Physics",
-    topic: "Current Electricity",
-    topicId: "current_electricity",
+    subject: "Programming for Problem Solving (C)",
+    topic: "Algorithm Design, Flowcharts & Pseudo-code",
+    topicId: "pps_u1_t1",
+    domain: "cse_1st_year",
     degree: "",
     year: "",
     branch: "",
@@ -100,6 +102,7 @@ function loadStore() {
 }
 
 function saveStore(data) {
+  if (process.env.VERCEL) return;
   try {
     fs.writeFileSync(STORE_FILE, JSON.stringify(data, null, 2), "utf-8");
   } catch (err) {
@@ -108,6 +111,8 @@ function saveStore(data) {
 }
 
 let db = loadStore();
+let neonSql = null;
+let persistentStoreInitialized = false;
 
 function recordActivity() {
   const today = getTodayDateString();
@@ -122,6 +127,35 @@ const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
+
+app.use(async (req, res, next) => {
+  if (!process.env.DATABASE_URL) return next();
+  try {
+    neonSql ||= neon(process.env.DATABASE_URL);
+    if (!persistentStoreInitialized) {
+      await neonSql`CREATE TABLE IF NOT EXISTS learnnova_state (id TEXT PRIMARY KEY, payload JSONB NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`;
+      const rows = await neonSql`SELECT payload FROM learnnova_state WHERE id = 'main'`;
+      if (rows.length) db = rows[0].payload;
+      else await neonSql`INSERT INTO learnnova_state (id, payload) VALUES ('main', ${JSON.stringify(db)}::jsonb) ON CONFLICT (id) DO NOTHING`;
+      persistentStoreInitialized = true;
+    }
+
+    const sendJson = res.json.bind(res);
+    res.json = (payload) => {
+      const snapshot = JSON.stringify(db);
+      return neonSql`UPDATE learnnova_state SET payload = ${snapshot}::jsonb, updated_at = NOW() WHERE id = 'main'`
+        .then(() => sendJson(payload))
+        .catch((error) => {
+          console.error("Persistent store write failed:", error);
+          return res.status(503).end("Progress storage is temporarily unavailable.");
+        });
+    };
+    next();
+  } catch (error) {
+    console.error("Persistent store initialization failed:", error);
+    res.status(503).json({ error: "Progress storage is temporarily unavailable." });
+  }
+});
 
 // 1. Health
 app.get("/api/health", (req, res) => {
@@ -1091,6 +1125,10 @@ function calculateStreak(completedActivities, practiceRecords) {
   return Math.min(count + 2, 7);
 }
 
-app.listen(PORT, () => {
-  console.log(`LearnNova Educational API Server running at http://localhost:${PORT}`);
-});
+export default app;
+
+if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
+  app.listen(PORT, () => {
+    console.log(`LearnNova Educational API Server running at http://localhost:${PORT}`);
+  });
+}

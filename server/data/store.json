@@ -2,12 +2,12 @@
   "profile": {
     "isOnboarded": true,
     "category": "college",
-    "name": "Jiya",
-    "grade": "Class 12",
+    "name": "Alex",
+    "grade": "B.Tech CSE - 3rd Year (Junior Core Curriculum)",
     "board": "CBSE",
-    "subject": "Computer Science",
-    "topic": "Binary Search Trees",
-    "topicId": "binary_search_trees",
+    "subject": "Software Engineering",
+    "topic": "Agile Manifesto, Principles & Scrum Framework",
+    "topicId": "se_u1_t1",
     "degree": "",
     "year": "",
     "branch": "",
@@ -16,52 +16,16 @@
     "preparationStage": "Revision & Practice",
     "preferences": {
       "confidence": "medium",
-      "struggleArea": "Numerical problem solving & formula application",
+      "struggleArea": "System design & algorithmic trade-offs",
       "learningStyle": "Simple intuitive explanations with worked examples",
       "studyTime": "30 min",
       "immediateGoal": "Master core concepts for high-scoring board & entrance performance"
     },
     "createdAt": "2026-10-28T07:06:53.586Z",
-    "updatedAt": "2026-10-28T08:00:47.850Z"
+    "updatedAt": "2026-10-28T09:01:34.530Z",
+    "domain": "cse_3rd_year"
   },
-  "assessmentSession": {
-    "id": "diag_session_1793174447874",
-    "topicId": "binary_search_trees",
-    "startedAt": "2026-10-28T08:00:47.874Z",
-    "totalTargetQuestions": 1,
-    "currentIndex": 0,
-    "answers": [],
-    "currentQuestion": {
-      "id": "diag_bst_01",
-      "conceptId": "bst_properties_invariant",
-      "conceptName": "BST Ordering Invariant & Searching",
-      "difficulty": 1,
-      "question": "In a valid Binary Search Tree (BST) containing unique integer keys, where is the minimum element always located?",
-      "options": [
-        {
-          "id": "A",
-          "text": "The leftmost node in the tree"
-        },
-        {
-          "id": "B",
-          "text": "The root node"
-        },
-        {
-          "id": "C",
-          "text": "The rightmost leaf"
-        },
-        {
-          "id": "D",
-          "text": "Any leaf node at random"
-        }
-      ],
-      "hint": "If left children are always smaller, keep walking left!"
-    },
-    "status": "in_progress",
-    "adaptiveLevel": 1,
-    "demonstratedConcepts": [],
-    "strugglingConcepts": []
-  },
+  "assessmentSession": null,
   "assessmentHistory": [],
   "conceptProficiency": {
     "electric_current_drift": {
@@ -127,9 +91,19 @@
       "attempts": 0,
       "correct": 0,
       "status": "unassessed"
+    },
+    "lesson_c_algorithms": {
+      "conceptId": "lesson_c_algorithms",
+      "name": "lesson_c_algorithms",
+      "score": 100,
+      "attempts": 1,
+      "correct": 1,
+      "status": "mastered"
     }
   },
-  "completedActivities": [],
+  "completedActivities": [
+    "lesson_c_algorithms"
+  ],
   "practiceRecords": [
     {
       "questionId": "diag_ce_01",
@@ -167,7 +141,13 @@
       "timestamp": "2026-10-28T07:51:19.577Z"
     }
   ],
-  "revisionQueue": [],
+  "revisionQueue": [
+    {
+      "conceptId": "lesson_c_algorithms",
+      "scheduledFor": "2026-10-31T08:51:22.025Z",
+      "intervalDays": 3
+    }
+  ],
   "tutorHistory": [
     {
       "role": "user",
@@ -176,10 +156,26 @@
     {
       "role": "assistant",
       "content": "Here is the simplest way to picture **Current Electricity**:\n\n* **Voltage (V)** is the water pump pressure pushing charge.\n* **Current (I)** is the flow rate of water gallons per second.\n* **Resistance (R)** is pebbles and narrow pipes choking the flow.\n* **Internal Resistance (r)** is friction inside the water pump itself!\n\nWhen you ask the pump for maximum water, its own internal friction eats some pressure before the water ever leaves the spout. Does that visual click?"
+    },
+    {
+      "role": "user",
+      "content": "Explain this concept simply"
+    },
+    {
+      "role": "assistant",
+      "content": "Here is the simplest way to picture **Current Electricity**:\n\n* **Voltage (V)** is the water pump pressure pushing charge.\n* **Current (I)** is the flow rate of water gallons per second.\n* **Resistance (R)** is pebbles and narrow pipes choking the flow.\n* **Internal Resistance (r)** is friction inside the water pump itself!\n\nWhen you ask the pump for maximum water, its own internal friction eats some pressure before the water ever leaves the spout. Does that visual click?"
+    },
+    {
+      "role": "user",
+      "content": "Give me a practice problem"
+    },
+    {
+      "role": "assistant",
+      "content": "Hey Jiya! I'm tracking your progress in **Electric Charges & Fields**.\n\nYou have strong momentum! What would you like to tackle right now?\n\n* **Clarify a concept** that feels fuzzy\n* **Break down a formula** step-by-step\n* **Try an interactive question** to test your exam readiness"
     }
   ],
   "activityHistory": {
-    "2026-10-28": 7,
+    "2026-10-28": 19,
     "2026-10-27": 5,
     "2026-10-26": 5,
     "2026-10-25": 5,
@@ -207,5 +203,33 @@
     "2026-09-07": 5,
     "2026-09-04": 2,
     "2026-09-01": 5
+  },
+  "topicReports": {
+    "phys11_u2_t1": {
+      "status": "completed",
+      "percent": 100,
+      "timeSpent": "1m",
+      "mastery": "Mastered",
+      "questionsSolved": "3/3",
+      "accuracy": "100%",
+      "lastActive": "Today",
+      "lastScore": "3/3",
+      "judgmentVerdict": "Lumi's Measurement Verdict: Mastered! You scored 100% (3/3). Your conceptual understanding of Uniformly Accelerated Motion & Equations is thorough and precise.",
+      "gapAnalysis": "No major conceptual gaps identified. You accurately analyzed invariant principles and avoided boundary traps.",
+      "updatedAt": "2026-10-28T09:05:07.246Z"
+    },
+    "se_u1_t1": {
+      "status": "completed",
+      "percent": 100,
+      "timeSpent": "1m",
+      "mastery": "Mastered",
+      "questionsSolved": "3/3",
+      "accuracy": "100%",
+      "lastActive": "Today",
+      "lastScore": "3/3",
+      "judgmentVerdict": "Lumi's Measurement Verdict: Mastered! You scored 100% (3/3). Your conceptual understanding of Agile Manifesto & Scrum Framework is thorough and precise.",
+      "gapAnalysis": "No major conceptual gaps identified. You accurately analyzed invariant principles and avoided boundary traps.",
+      "updatedAt": "2026-10-28T09:07:16.902Z"
+    }
   }
 }
