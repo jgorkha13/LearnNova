@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { User, Settings, RefreshCw, AlertTriangle, Check, BookOpen, Clock, Heart } from "lucide-react";
-import MiloCharacter from "../components/MiloCharacter";
+import { User, Settings, RefreshCw, AlertTriangle, Check, BookOpen, Clock, Heart, Compass } from "lucide-react";
+import LumiCharacter from "../components/LumiCharacter";
 import { updateProfile, resetProgress } from "../services/api";
 
-export default function ProfileView({ profile, onProfileUpdated, onResetAll }) {
+export default function ProfileView({ profile, onProfileUpdated, onResetAll, onViewLandingPage }) {
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: profile?.name || "Alex",
@@ -61,7 +61,7 @@ export default function ProfileView({ profile, onProfileUpdated, onResetAll }) {
           marginBottom: 32,
         }}
       >
-        <MiloCharacter expression="welcome" size={80} />
+        <LumiCharacter expression="welcome" size={80} floating={true} />
         <div style={{ flex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <h2 style={{ fontSize: 22, fontWeight: 800, color: "var(--text-primary)", margin: 0 }}>
@@ -85,23 +85,36 @@ export default function ProfileView({ profile, onProfileUpdated, onResetAll }) {
           </p>
         </div>
 
-        {!editing ? (
-          <button
-            onClick={() => setEditing(true)}
-            className="btn btn-secondary"
-            style={{ padding: "10px 18px", fontSize: 14 }}
-          >
-            Edit Settings
-          </button>
-        ) : (
-          <button
-            onClick={() => setEditing(false)}
-            className="btn btn-ghost"
-            style={{ padding: "10px 18px", fontSize: 14 }}
-          >
-            Cancel
-          </button>
-        )}
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          {onViewLandingPage && (
+            <button
+              onClick={onViewLandingPage}
+              className="btn btn-secondary"
+              style={{ padding: "10px 16px", fontSize: 14, display: "flex", alignItems: "center", gap: 6 }}
+            >
+              <Compass size={16} />
+              <span>Landing Page</span>
+            </button>
+          )}
+
+          {!editing ? (
+            <button
+              onClick={() => setEditing(true)}
+              className="btn btn-primary"
+              style={{ padding: "10px 18px", fontSize: 14 }}
+            >
+              Edit Settings
+            </button>
+          ) : (
+            <button
+              onClick={() => setEditing(false)}
+              className="btn btn-ghost"
+              style={{ padding: "10px 18px", fontSize: 14 }}
+            >
+              Cancel
+            </button>
+          )}
+        </div>
       </div>
 
       {savedSuccess && (

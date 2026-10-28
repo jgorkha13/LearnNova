@@ -1,6 +1,6 @@
 import React from "react";
-import { BookOpen, Sparkles, TrendingUp, User, Layers, Flame } from "lucide-react";
-import MiloCharacter from "./MiloCharacter";
+import { BookOpen, Sparkles, TrendingUp, User, Layers, Flame, Compass } from "lucide-react";
+import LumiCharacter from "./LumiCharacter";
 
 export default function Navigation({
   activeTab,
@@ -8,6 +8,7 @@ export default function Navigation({
   onOpenTutor,
   onOpenSubjectDashboard,
   onOpenStreakModal,
+  onViewLandingPage,
 }) {
   const navItems = [
     { id: "learn", label: "Learn", icon: BookOpen },
@@ -169,9 +170,42 @@ export default function Navigation({
             <Flame size={18} color="#D97706" />
             <span>Streak Heatmap</span>
           </button>
+
+          {onViewLandingPage && (
+            <button
+              onClick={onViewLandingPage}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 14,
+                padding: "10px 14px",
+                borderRadius: "var(--radius-md)",
+                fontSize: 14,
+                fontWeight: 600,
+                color: "var(--text-secondary)",
+                backgroundColor: "transparent",
+                border: "1px solid transparent",
+                transition: "all 0.15s ease",
+                textAlign: "left",
+                width: "100%",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "var(--brand-primary-tint)";
+                e.currentTarget.style.color = "var(--brand-primary)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.color = "var(--text-secondary)";
+              }}
+            >
+              <Compass size={18} color="var(--brand-primary)" />
+              <span>Landing Page</span>
+            </button>
+          )}
         </div>
 
-        {/* Milo Tutor Quick Launcher */}
+        {/* Lumi Tutor Quick Launcher */}
         <div
           onClick={onOpenTutor}
           style={{
@@ -188,10 +222,10 @@ export default function Navigation({
           }}
           className="milo-launcher card-interactive"
         >
-          <MiloCharacter expression="welcome" size={44} />
+          <LumiCharacter expression="welcome" size={44} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>
-              Ask Milo Tutor
+              Ask Lumi Tutor
             </div>
             <div style={{ fontSize: 11, color: "var(--text-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               Get hints & simple analogies

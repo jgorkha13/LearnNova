@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import Navigation from "./components/Navigation";
 import Header from "./components/Header";
 import TutorModal from "./components/TutorModal";
-import MiloCharacter from "./components/MiloCharacter";
+import LumiCharacter from "./components/LumiCharacter";
 import SubjectDashboardModal from "./components/SubjectDashboardModal";
 import StreakModal from "./components/StreakModal";
 
 // Views
+import LandingPage from "./views/LandingPage";
 import Onboarding from "./views/Onboarding";
 import Assessment from "./views/Assessment";
 import DiagnosticReport from "./views/DiagnosticReport";
@@ -23,12 +24,13 @@ export default function App() {
   const [progress, setProgress] = useState(null);
 
   // App Navigation & Workflow State
-  // Mode: 'app' | 'onboarding' | 'assessment' | 'diagnostic_report'
-  const [mode, setMode] = useState("app");
+  // Mode: 'landing' | 'onboarding' | 'assessment' | 'diagnostic_report' | 'app'
+  const [mode, setMode] = useState("landing");
   const [activeTab, setActiveTab] = useState("learn"); // 'learn' | 'practice' | 'progress' | 'profile'
   const [isTutorOpen, setIsTutorOpen] = useState(false);
   const [isSubjectDashboardOpen, setIsSubjectDashboardOpen] = useState(false);
   const [isStreakModalOpen, setIsStreakModalOpen] = useState(false);
+  const [onboardingInitialData, setOnboardingInitialData] = useState({});
 
   // Initial Load
   const loadInitialData = async () => {
@@ -36,22 +38,26 @@ export default function App() {
       const pData = await fetchProfile();
       if (pData?.profile) {
         setProfile(pData.profile);
-        if (!pData.profile.isOnboarded) {
-          setMode("onboarding");
-        } else {
-          setMode("app");
-        }
-      } else {
-        setMode("onboarding");
       }
 
       const progData = await fetchProgress();
       if (progData) {
         setProgress(progData);
       }
+
+      // Check URL parameters for explicit view overrides
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("view") === "app") {
+        setMode("app");
+      } else if (params.get("view") === "onboarding") {
+        setMode("onboarding");
+      } else {
+        // Default to the interactive Duolingo Landing Page
+        setMode("landing");
+      }
     } catch (err) {
       console.error("Initialization error:", err);
-      setMode("onboarding");
+      setMode("landing");
     } finally {
       setLoading(false);
     }
@@ -62,11 +68,73 @@ export default function App() {
   }, []);
 
   // Handlers
+  const handleGetStarted = async (customData) => {
+    if (customData?.name) {
+      // Direct signup from Landing page modal
+      setLoading(true);
+      try {
+        const payload = {
+          isOnboarded: true,
+          name: customData.name,
+          category: customData.category || "entrance",
+          grade: "Class 12",
+          board: "CBSE",
+          subject: customData.subject || "Physics",
+          topic: customData.topic || "Current Electricity",
+          topicId: customData.topicId || "current_electricity",
+          exam: customData.category === "entrance" ? "JEE Main" : "",
+          preferences: {
+            studyTime: customData.preferences?.studyTime || "30 min",
+            confidence: "medium",
+            struggleArea: "Numerical problem solving & formula application",
+            learningStyle: "Simple intuitive explanations with worked examples",
+          },
+        };
+        const data = await updateProfile(payload);
+        setProfile(data.profile);
+        const progData = await fetchProgress();
+        if (progData) setProgress(progData);
+        setMode("assessment");
+      } catch (err) {
+        console.error("Direct signup error:", err);
+        setMode("assessment");
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      if (customData) {
+        setOnboardingInitialData(customData);
+      }
+      setMode("onboarding");
+    }
+  };
+
+  const handleSignIn = async (name) => {
+    setLoading(true);
+    try {
+      if (name && profile) {
+        const updated = await updateProfile({ ...profile, name, isOnboarded: true });
+        setProfile(updated.profile);
+      }
+      const progData = await fetchProgress();
+      if (progData) setProgress(progData);
+      setMode("app");
+      setActiveTab("learn");
+    } catch (e) {
+      console.warn("Sign in error:", e);
+      setMode("app");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleOnboardingComplete = async (newProfile) => {
     setLoading(true);
     try {
       const data = await updateProfile({ ...newProfile, isOnboarded: true });
       setProfile(data.profile);
+      const progData = await fetchProgress();
+      if (progData) setProgress(progData);
       setMode("assessment");
     } catch (err) {
       console.error("Failed to complete onboarding:", err);
@@ -93,7 +161,7 @@ export default function App() {
   const handleResetAll = () => {
     setProfile(null);
     setProgress(null);
-    setMode("onboarding");
+    setMode("landing");
   };
 
   const handleTopicSwitched = async (updatedProfile) => {
@@ -119,7 +187,7 @@ export default function App() {
           gap: 16,
         }}
       >
-        <MiloCharacter expression="thinking" size={90} />
+        <LumiCharacter expression="thinking" size={90} floating={true} />
         <p style={{ fontSize: 16, fontWeight: 600, color: "var(--text-secondary)" }}>
           Loading LearnNova...
         </p>
@@ -127,9 +195,26 @@ export default function App() {
     );
   }
 
+  // 0. Interactive Duolingo Signup Landing Page Mode
+  if (mode === "landing") {
+    return (
+      <LandingPage
+        onGetStarted={handleGetStarted}
+        onSignIn={handleSignIn}
+        existingProfile={profile}
+      />
+    );
+  }
+
   // 1. Onboarding Mode
   if (mode === "onboarding") {
-    return <Onboarding onComplete={handleOnboardingComplete} />;
+    return (
+      <Onboarding
+        initialSelections={onboardingInitialData}
+        onComplete={handleOnboardingComplete}
+        onExit={() => setMode("landing")}
+      />
+    );
   }
 
   // 2. Focused Diagnostic Assessment Mode
@@ -156,6 +241,7 @@ export default function App() {
           onOpenTutor={() => setIsTutorOpen(true)}
           onOpenSubjectDashboard={() => setIsSubjectDashboardOpen(true)}
           onOpenStreakModal={() => setIsStreakModalOpen(true)}
+          onViewLandingPage={() => setMode("landing")}
         />
         <div className="main-content">
           <Header
@@ -200,6 +286,7 @@ export default function App() {
         onOpenTutor={() => setIsTutorOpen(true)}
         onOpenSubjectDashboard={() => setIsSubjectDashboardOpen(true)}
         onOpenStreakModal={() => setIsStreakModalOpen(true)}
+        onViewLandingPage={() => setMode("landing")}
       />
 
       {/* Main Workspace Area */}
@@ -242,6 +329,7 @@ export default function App() {
               profile={profile}
               onProfileUpdated={(updated) => setProfile(updated)}
               onResetAll={handleResetAll}
+              onViewLandingPage={() => setMode("landing")}
             />
           )}
         </main>

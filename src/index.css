@@ -190,6 +190,65 @@ button {
   box-shadow: 0 1px 0 var(--success-solid-hover);
 }
 
+/* Duolingo-Style Tactile Hero CTAs */
+.btn-cta-green {
+  background-color: #58cc02;
+  color: #ffffff !important;
+  box-shadow: 0 4px 0 #46a302;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 16px 36px;
+  border-radius: var(--radius-lg);
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+
+.btn-cta-green:hover:not(:disabled) {
+  background-color: #61e002;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #46a302;
+}
+
+.btn-cta-green:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #46a302;
+}
+
+.btn-cta-white {
+  background-color: #ffffff;
+  color: var(--brand-primary) !important;
+  border: 2px solid var(--border-medium);
+  box-shadow: 0 4px 0 var(--border-medium);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 16px 36px;
+  border-radius: var(--radius-lg);
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+
+.btn-cta-white:hover:not(:disabled) {
+  background-color: #f8fafc;
+  border-color: var(--brand-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 var(--border-medium);
+}
+
+.btn-cta-white:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--border-medium);
+}
+
 .btn-ghost {
   background: transparent;
   color: var(--text-secondary);
@@ -326,7 +385,22 @@ button {
   color: var(--error-text);
 }
 
-/* Animations */
+/* Lumi Floating Animation */
+.lumi-floating {
+  animation: lumiFloat 3.8s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes lumiFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-16px) rotate(1.8deg);
+  }
+}
+
+/* Other Animations */
 @keyframes slideUp {
   from {
     opacity: 0;

@@ -1,8 +1,8 @@
 import React from "react";
-import MiloCharacter from "./MiloCharacter";
+import LumiCharacter from "./LumiCharacter";
 
 /**
- * MiloSpeech - Character paired with contextual speech bubble
+ * LumiSpeech - Character paired with contextual speech bubble
  */
 export default function MiloSpeech({
   expression = "welcome",
@@ -11,10 +11,12 @@ export default function MiloSpeech({
   characterPosition = "left", // 'left' | 'top'
   extra = null,
   className = "",
+  name = "Lumi",
+  floating = false,
 }) {
   return (
     <div
-      className={`milo-speech-container ${characterPosition === "top" ? "flex-col items-center text-center" : "flex-row items-start"} ${className}`}
+      className={`lumi-speech-container ${characterPosition === "top" ? "flex-col items-center text-center" : "flex-row items-start"} ${className}`}
       style={{
         display: "flex",
         flexDirection: characterPosition === "top" ? "column" : "row",
@@ -23,7 +25,7 @@ export default function MiloSpeech({
         margin: "12px 0 20px 0",
       }}
     >
-      <MiloCharacter expression={expression} size={size} />
+      <LumiCharacter expression={expression} size={size} floating={floating} interactive />
 
       <div
         className="speech-bubble"
@@ -55,7 +57,7 @@ export default function MiloSpeech({
               color: "var(--brand-primary)",
             }}
           >
-            Milo Companion
+            {name} AI Companion
           </span>
           <span
             style={{

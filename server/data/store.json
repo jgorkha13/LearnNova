@@ -5,9 +5,9 @@
     "name": "Alex",
     "grade": "Class 12",
     "board": "CBSE",
-    "subject": "Chemistry",
-    "topic": "Electrochemistry",
-    "topicId": "electrochemistry",
+    "subject": "Physics",
+    "topic": "Current Electricity",
+    "topicId": "current_electricity",
     "degree": "",
     "year": "",
     "branch": "",
@@ -22,7 +22,7 @@
       "immediateGoal": "Master core concepts for high-scoring board & entrance performance"
     },
     "createdAt": "2026-10-28T07:06:53.586Z",
-    "updatedAt": "2026-10-28T07:21:44.303Z"
+    "updatedAt": "2026-10-28T07:57:01.441Z"
   },
   "assessmentSession": null,
   "assessmentHistory": [],
@@ -30,41 +30,41 @@
     "electric_current_drift": {
       "conceptId": "electric_current_drift",
       "name": "Electric Current & Drift Velocity",
-      "score": 0,
-      "attempts": 0,
-      "correct": 0,
+      "score": 15,
+      "attempts": 1,
+      "correct": 1,
       "status": "unassessed"
     },
     "ohms_law_resistance": {
       "conceptId": "ohms_law_resistance",
       "name": "Ohm's Law & Resistivity Factors",
-      "score": 0,
-      "attempts": 0,
-      "correct": 0,
+      "score": 15,
+      "attempts": 1,
+      "correct": 1,
       "status": "unassessed"
     },
     "temp_dependence_resistance": {
       "conceptId": "temp_dependence_resistance",
       "name": "Temperature Coefficient of Resistance",
-      "score": 0,
-      "attempts": 0,
-      "correct": 0,
+      "score": 15,
+      "attempts": 1,
+      "correct": 1,
       "status": "unassessed"
     },
     "resistor_combinations": {
       "conceptId": "resistor_combinations",
       "name": "Series & Parallel Resistor Networks",
-      "score": 0,
-      "attempts": 0,
-      "correct": 0,
+      "score": 15,
+      "attempts": 1,
+      "correct": 1,
       "status": "unassessed"
     },
     "emf_internal_resistance": {
       "conceptId": "emf_internal_resistance",
       "name": "EMF, Terminal Voltage & Internal Resistance",
-      "score": 0,
-      "attempts": 0,
-      "correct": 0,
+      "score": 15,
+      "attempts": 1,
+      "correct": 1,
       "status": "unassessed"
     },
     "kirchhoff_laws": {
@@ -93,7 +93,43 @@
     }
   },
   "completedActivities": [],
-  "practiceRecords": [],
+  "practiceRecords": [
+    {
+      "questionId": "diag_ce_01",
+      "conceptId": "electric_current_drift",
+      "isCorrect": true,
+      "selectedOptionId": "A",
+      "timestamp": "2026-10-28T07:48:54.346Z"
+    },
+    {
+      "questionId": "diag_ce_02",
+      "conceptId": "ohms_law_resistance",
+      "isCorrect": true,
+      "selectedOptionId": "B",
+      "timestamp": "2026-10-28T07:49:40.417Z"
+    },
+    {
+      "questionId": "diag_ce_03",
+      "conceptId": "temp_dependence_resistance",
+      "isCorrect": true,
+      "selectedOptionId": "A",
+      "timestamp": "2026-10-28T07:50:15.694Z"
+    },
+    {
+      "questionId": "diag_ce_04",
+      "conceptId": "resistor_combinations",
+      "isCorrect": true,
+      "selectedOptionId": "B",
+      "timestamp": "2026-10-28T07:50:47.133Z"
+    },
+    {
+      "questionId": "diag_ce_05",
+      "conceptId": "emf_internal_resistance",
+      "isCorrect": true,
+      "selectedOptionId": "B",
+      "timestamp": "2026-10-28T07:51:19.577Z"
+    }
+  ],
   "revisionQueue": [],
   "tutorHistory": [
     {
@@ -106,7 +142,7 @@
     }
   ],
   "activityHistory": {
-    "2026-10-28": 2,
+    "2026-10-28": 7,
     "2026-10-27": 5,
     "2026-10-26": 5,
     "2026-10-25": 5,

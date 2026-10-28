@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 import { ArrowLeft, ArrowRight, Check, School, GraduationCap, Target } from "lucide-react";
-import MiloCharacter from "../components/MiloCharacter";
+import LumiCharacter from "../components/LumiCharacter";
 import MiloSpeech from "../components/MiloSpeech";
 
-export default function Onboarding({ onComplete, curriculum }) {
+export default function Onboarding({ onComplete, curriculum, initialSelections = {}, onExit }) {
   const [step, setStep] = useState(1);
 
-  // Form State
-  const [category, setCategory] = useState("school"); // 'school' | 'college' | 'entrance'
+  // Form State initialized with any landing page selections
+  const [category, setCategory] = useState(initialSelections.category || "school"); // 'school' | 'college' | 'entrance'
   
   // School details
-  const [grade, setGrade] = useState("Class 12");
-  const [board, setBoard] = useState("CBSE");
-  const [subject, setSubject] = useState("Physics");
-  const [topic, setTopic] = useState("Current Electricity");
-  const [topicId, setTopicId] = useState("current_electricity");
+  const [grade, setGrade] = useState(initialSelections.grade || "Class 12");
+  const [board, setBoard] = useState(initialSelections.board || "CBSE");
+  const [subject, setSubject] = useState(initialSelections.subject || "Physics");
+  const [topic, setTopic] = useState(initialSelections.topic || "Current Electricity");
+  const [topicId, setTopicId] = useState(initialSelections.topicId || "current_electricity");
 
   // College details
   const [degree, setDegree] = useState("B.Tech / B.E.");
@@ -30,7 +30,7 @@ export default function Onboarding({ onComplete, curriculum }) {
   const [confidence, setConfidence] = useState("medium");
   const [struggleArea, setStruggleArea] = useState("Numerical problem solving & formula application");
   const [learningStyle, setLearningStyle] = useState("Simple intuitive explanations with worked examples");
-  const [dailyTime, setDailyTime] = useState("45 minutes");
+  const [dailyTime, setDailyTime] = useState(initialSelections.preferences?.studyTime || "45 minutes");
 
   const totalSteps = 4;
   const progressPercent = (step / totalSteps) * 100;
@@ -92,9 +92,9 @@ export default function Onboarding({ onComplete, curriculum }) {
           gap: 16,
         }}
       >
-        {step > 1 && (
+        {(step > 1 || onExit) && (
           <button
-            onClick={handleBack}
+            onClick={step > 1 ? handleBack : onExit}
             className="btn-ghost"
             style={{
               padding: 8,
@@ -103,7 +103,7 @@ export default function Onboarding({ onComplete, curriculum }) {
               alignItems: "center",
               justifyContent: "center",
             }}
-            aria-label="Previous step"
+            aria-label={step > 1 ? "Previous step" : "Back to Home"}
           >
             <ArrowLeft size={20} color="var(--text-secondary)" />
           </button>
@@ -152,7 +152,7 @@ export default function Onboarding({ onComplete, curriculum }) {
           <div>
             <MiloSpeech
               expression="welcome"
-              message="Hey! I’m Milo. I’ll help you figure out what you know and build your personalized learning path."
+              message="Hey! I’m Lumi. I’ll help you figure out what you know and build your personalized learning path."
               size={64}
             />
 
@@ -441,7 +441,7 @@ export default function Onboarding({ onComplete, curriculum }) {
               Learning Style & Preferences
             </h2>
             <p style={{ fontSize: 14, color: "var(--text-secondary)", marginBottom: 20 }}>
-              Optional preferences to fine-tune Milo's teaching cadence:
+              Optional preferences to fine-tune Lumi's teaching cadence:
             </p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
@@ -516,11 +516,11 @@ export default function Onboarding({ onComplete, curriculum }) {
         {step === 4 && (
           <div style={{ textAlign: "center" }}>
             <div style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
-              <MiloCharacter expression="celebrating" size={120} />
+              <LumiCharacter expression="celebrating" size={120} floating={true} />
             </div>
 
             <h2 style={{ fontSize: 26, fontWeight: 800, color: "var(--text-primary)", marginBottom: 12 }}>
-              Meet Milo, Your Personal AI Companion!
+              Meet Lumi, Your Personal AI Companion!
             </h2>
 
             <div
