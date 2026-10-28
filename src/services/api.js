@@ -171,3 +171,26 @@ export async function resetProgress() {
   localStorage.removeItem("learnnova_profile");
   return await res.json();
 }
+
+export async function fetchDomains() {
+  const res = await fetch(`${BASE_URL}/api/curriculum/domains`);
+  if (!res.ok) throw new Error("Failed to fetch curriculum domains");
+  return await res.json();
+}
+
+export async function fetchDomainCurriculum(domainId) {
+  const res = await fetch(`${BASE_URL}/api/curriculum/domain/${domainId}`);
+  if (!res.ok) throw new Error(`Failed to fetch curriculum for ${domainId}`);
+  return await res.json();
+}
+
+export async function updateTopicProgress(payload) {
+  const res = await fetch(`${BASE_URL}/api/topic-progress/update`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error("Failed to update topic progress");
+  return await res.json();
+}
+

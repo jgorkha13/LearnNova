@@ -438,4 +438,587 @@ export const LESSONS_DATA = {
       },
     },
   ],
+
+  // ==========================================
+  // B.TECH CSE 3RD YEAR CORE LESSONS
+  // ==========================================
+  cse3_se: [
+    {
+      id: "lesson_se_agile_scrum",
+      conceptId: "agile_scrum_sprints",
+      title: "Agile Manifesto & Scrum Framework",
+      conceptName: "Agile & Scrum Sprints",
+      duration: "6 min",
+      order: 1,
+      miloIntro: "Let's explore how modern software engineering teams ship reliable value in 2-week agile sprint iterations!",
+      cards: [
+        {
+          id: "card_1",
+          type: "concept",
+          heading: "Agile Values & The Scrum Lifecycle",
+          content: [
+            "Agile prioritizes working software, customer collaboration, and responding to change over rigid contract negotiation and heavyweight documentation.",
+            "In Scrum, work is organized into time-boxed Sprints (usually 2 to 4 weeks) led by a Product Owner, Scrum Master, and cross-functional Engineering Team.",
+            "Ceremonies keep teams aligned: Sprint Planning (scope commitment), Daily Standup (15-min blocker sync), Sprint Review (demo to stakeholders), and Sprint Retrospective (continuous team improvement).",
+          ],
+          formula: "\\text{Velocity} = \\sum \\text{Completed Story Points per Sprint}",
+          formulaLabels: [
+            { symbol: "Story Points", label: "Relative effort & complexity unit (Fibonacci sequence: 1, 2, 3, 5, 8...)" },
+            { symbol: "Burndown Chart", label: "Real-time graph tracking remaining story points vs days in the sprint" },
+          ],
+        },
+        {
+          id: "card_2",
+          type: "worked_example",
+          heading: "Real-World Scenario: Story Point Commitment",
+          problem: "A development team has an average historic velocity of 32 story points. In sprint planning, the Product Owner introduces 5 user stories estimated at 8, 5, 8, 13, and 3 points. What should the Scrum team commit to?",
+          steps: [
+            { step: "Calculate requested total", detail: "8 + 5 + 8 + 13 + 3 = 37 story points total." },
+            { step: "Compare with velocity", detail: "37 points exceeds historic average velocity of 32 by 5 points. Overcommitting leads to rushed code and technical debt." },
+            { step: "Prune or split", detail: "De-prioritize the 5-point story or split the 13-point story into two smaller stories (8 + 5), committing to 32 points." },
+            { step: "Key Takeaway", detail: "Agile velocity is an empirical capacity measurement, not a deadline quota." },
+          ],
+        },
+      ],
+      interactiveCheck: {
+        question: "Which Scrum ceremony is specifically dedicated to analyzing team workflow friction and implementing process improvements for the NEXT sprint?",
+        options: [
+          { id: "A", text: "Sprint Retrospective", isCorrect: true, feedback: "Spot on! The Sprint Retrospective is the team's internal inspect-and-adapt meeting focused purely on how the team collaborated, tooling issues, and actionable improvements." },
+          { id: "B", text: "Sprint Review", isCorrect: false, feedback: "Sprint Review focuses on demonstrating the product increment to stakeholders, not internal team processes." },
+          { id: "C", text: "Daily Scrum", isCorrect: false, feedback: "Daily Scrum is a daily tactical blocker check, not deep retrospective analysis." },
+          { id: "D", text: "Backlog Refinement", isCorrect: false, feedback: "Backlog refinement clarifies upcoming user stories." },
+        ],
+      },
+      tutorExtensions: {
+        simplify: {
+          analogyTitle: "The Food Truck vs Grand Hotel Banquet",
+          analogyContent: "Waterfall is like planning a 500-guest hotel banquet 6 months in advance without tasting dishes along the way. Agile is like running a food truck: you cook small batches daily, hear customer reactions immediately, and adjust the recipe within hours!",
+        },
+        anotherExample: {
+          title: "User Story Formatting",
+          problem: "How should a payment gateway integration requirement be drafted in standard Agile User Story format?",
+          solution: "Format: 'As a [registered shopper], I want to [pay with Apple Pay / UPI in one click] so that [I can complete checkout in under 10 seconds without typing card numbers]'. Includes clear Acceptance Criteria (Given / When / Then).",
+        },
+        hint: "Review is for the PRODUCT with external stakeholders. Retrospective is for the PROCESS with the internal team.",
+        similarQuestion: {
+          question: "Who holds the ultimate authority to prioritize items in the Product Backlog in Scrum?",
+          options: [
+            { id: "opt_1", text: "Product Owner", isCorrect: true, feedback: "Correct! The Product Owner owns the vision, business value, and priority order of backlog items." },
+            { id: "opt_2", text: "Scrum Master", isCorrect: false, feedback: "Scrum Master coaches process, but does not dictate business priorities." },
+            { id: "opt_3", text: "Lead Architect", isCorrect: false, feedback: "Architect advises on feasibility, but PO decides business value." },
+            { id: "opt_4", text: "Project Manager", isCorrect: false, feedback: "Scrum replaces traditional PMs with PO and Scrum Master roles." },
+          ],
+        },
+      },
+    },
+    {
+      id: "lesson_se_design_patterns",
+      conceptId: "solid_design_principles",
+      title: "SOLID Principles & Architectural Patterns",
+      conceptName: "SOLID Principles in Software Design",
+      duration: "7 min",
+      order: 2,
+      miloIntro: "Let's master the 5 SOLID engineering principles that separate spaghetti code from maintainable enterprise systems!",
+      cards: [
+        {
+          id: "card_1",
+          type: "concept",
+          heading: "The 5 SOLID Pillars",
+          content: [
+            "S - Single Responsibility Principle (SRP): A class should have one, and only one, reason to change.",
+            "O - Open/Closed Principle (OCP): Software entities should be open for extension, but closed for modification (achieved via interfaces and polymorphism).",
+            "L - Liskov Substitution Principle (LSP): Subtypes must be substitutable for their base types without altering program correctness.",
+            "I - Interface Segregation Principle (ISP): Clients should never be forced to depend on methods they do not use (prefer small, role-specific interfaces).",
+            "D - Dependency Inversion Principle (DIP): High-level modules should not depend on low-level modules; both should depend on abstractions (Dependency Injection).",
+          ],
+          formula: "\\text{High-Level Business Logic} \\longrightarrow [\\text{Interface}] \\longleftarrow \\text{Concrete Low-Level Service}",
+          formulaLabels: [
+            { symbol: "DIP", label: "Inverts dependency arrow using abstract interfaces" },
+            { symbol: "Coupling", label: "Low coupling + High cohesion = clean maintainable codebase" },
+          ],
+        },
+      ],
+      interactiveCheck: {
+        question: "A Developer has a `PaymentProcessor` class. When adding Bitcoin support, they modify the core `process()` method with a new `else if (type == 'BTC')` branch. Which SOLID principle is being directly violated?",
+        options: [
+          { id: "A", text: "Open/Closed Principle (OCP)", isCorrect: true, feedback: "Outstanding! OCP states that classes should be open for extension (e.g. creating a new `BitcoinPaymentStrategy` implementing `IPaymentMethod`) but CLOSED for modification of existing working classes." },
+          { id: "B", text: "Single Responsibility Principle (SRP)", isCorrect: false, feedback: "While related, adding if-else branches directly to modify existing behavior violates OCP." },
+          { id: "C", text: "Interface Segregation Principle", isCorrect: false, feedback: "ISP concerns bloated interface method signatures." },
+          { id: "D", text: "Liskov Substitution Principle", isCorrect: false, feedback: "LSP concerns inheritance polymorphism contracts." },
+        ],
+      },
+      tutorExtensions: {
+        simplify: {
+          analogyTitle: "The Wall Outlet Plug Analogy",
+          analogyContent: "Your home electrical wall socket is an Interface. It provides standard AC power. When you invent a brand new lamp or laptop charger, you don't break open the wall to rewire the building (that would violate Open/Closed)! You simply design your plug to match the standard socket. That is Open/Closed and Dependency Inversion in action.",
+        },
+        anotherExample: {
+          title: "Refactoring Violation with Strategy Pattern",
+          problem: "How do you refactor `if (type == 'CreditCard') ... else if (type == 'PayPal')`?",
+          solution: "Define interface `PaymentMethod { void pay(double amount); }`. Implement `CreditCardPayment` and `PayPalPayment`. Pass the desired implementation to the constructor via Dependency Injection.",
+        },
+        hint: "Open for extension (adding new plugins), closed for modification (never editing tested core files).",
+        similarQuestion: {
+          question: "If a `Square` subclass inherits from `Rectangle` and setting `square.setWidth(10)` unexpectedly changes `square.height`, which principle is violated?",
+          options: [
+            { id: "opt_1", text: "Liskov Substitution Principle (LSP)", isCorrect: true, feedback: "Correct! The Square violates the behavior expected of a generic Rectangle." },
+            { id: "opt_2", text: "Single Responsibility", isCorrect: false, feedback: "Incorrect." },
+            { id: "opt_3", text: "Dependency Inversion", isCorrect: false, feedback: "Incorrect." },
+            { id: "opt_4", text: "Interface Segregation", isCorrect: false, feedback: "Incorrect." },
+          ],
+        },
+      },
+    },
+  ],
+
+  cse3_cn: [
+    {
+      id: "lesson_cn_osi_tcpip",
+      conceptId: "osi_7_layer_model",
+      title: "OSI 7 Layers vs TCP/IP Architecture",
+      conceptName: "OSI 7-Layer Reference Model",
+      duration: "6 min",
+      order: 1,
+      miloIntro: "Let's demystify how your browser's HTTP request journeys down through operating system packets, network frames, and physical electrical pulses!",
+      cards: [
+        {
+          id: "card_1",
+          type: "concept",
+          heading: "The 7 Layers & Protocol Data Units (PDUs)",
+          content: [
+            "Layer 7 (Application): HTTP, DNS, SMTP — human-computer interaction.",
+            "Layer 6 (Presentation): TLS encryption, ASCII, JSON formatting.",
+            "Layer 5 (Session): Authentication & session persistence (RPC).",
+            "Layer 4 (Transport): TCP/UDP — Port numbers, end-to-end reliability, segment PDU.",
+            "Layer 3 (Network): IPv4/IPv6 — Logical IP addressing, routers, packet PDU.",
+            "Layer 2 (Data Link): Ethernet, MAC addresses, switches, framing, CRC, frame PDU.",
+            "Layer 1 (Physical): Cables, fiber optics, radio waves, voltage bits (0s and 1s).",
+          ],
+          formula: "\\text{Data} \\xrightarrow{\\text{L4}} [\\text{TCP} | \\text{Data}] \\xrightarrow{\\text{L3}} [\\text{IP} | \\text{TCP} | \\text{Data}] \\xrightarrow{\\text{L2}} [\\text{MAC} | \\text{IP} | \\text{TCP} | \\text{Data} | \\text{CRC}]",
+          formulaLabels: [
+            { symbol: "Encapsulation", label: "Each layer prepends its own header and hands it down" },
+            { symbol: "Decapsulation", label: "Receiving host strips headers as data climbs up the stack" },
+          ],
+        },
+      ],
+      interactiveCheck: {
+        question: "At which layer of the OSI model does an Ethernet Switch primarily operate to forward frames using hardware MAC addresses?",
+        options: [
+          { id: "A", text: "Layer 2 (Data Link Layer)", isCorrect: true, feedback: "Spot on! Traditional Layer-2 switches inspect source and destination MAC addresses in frame headers to build forwarding MAC tables." },
+          { id: "B", text: "Layer 3 (Network Layer)", isCorrect: false, feedback: "Routers operate at Layer 3 using IP addresses, not switches using MAC." },
+          { id: "C", text: "Layer 4 (Transport Layer)", isCorrect: false, feedback: "Layer 4 manages port numbers and TCP connections." },
+          { id: "D", text: "Layer 1 (Physical Layer)", isCorrect: false, feedback: "Hubs operate at Layer 1 by blindly repeating electrical signals." },
+        ],
+      },
+      tutorExtensions: {
+        simplify: {
+          analogyTitle: "The International Postal Mail Analogy",
+          analogyContent: "Layer 7 is the letter you write. Layer 6 is translating it to French. Layer 5 is keeping correspondence order. Layer 4 is choosing Express Certified Delivery with tracking number (TCP). Layer 3 is writing the Street, City, and Country on the envelope (IP Address). Layer 2 is the postal van driving to the distribution hub (Local MAC route). Layer 1 is the asphalt road under the wheels!",
+        },
+        anotherExample: {
+          title: "Port vs IP Address",
+          problem: "Why are both an IP address AND a Port number required to deliver a message?",
+          solution: "The IP address delivers the packet to the correct computer in the world (like an apartment building address). The Port number delivers the segment to the specific application running inside that computer, like Chrome tab or Spotify (like the apartment room number).",
+        },
+        hint: "Mnemonic from bottom to top: Please Do Not Throw Sausage Pizza Away (Physical, Data Link, Network, Transport, Session, Presentation, Application).",
+        similarQuestion: {
+          question: "Which Protocol Data Unit (PDU) corresponds specifically to Layer 3 (Network Layer)?",
+          options: [
+            { id: "opt_1", text: "Packet", isCorrect: true, feedback: "Correct! Layer 3 PDU is a Packet (Layer 2 is Frame, Layer 4 is Segment)." },
+            { id: "opt_2", text: "Frame", isCorrect: false, feedback: "Frame is Layer 2." },
+            { id: "opt_3", text: "Segment", isCorrect: false, feedback: "Segment is Layer 4." },
+            { id: "opt_4", text: "Bit", isCorrect: false, feedback: "Bit is Layer 1." },
+          ],
+        },
+      },
+    },
+    {
+      id: "lesson_cn_routing_cidr",
+      conceptId: "ipv4_subnetting_cidr",
+      title: "IPv4 Subnetting & CIDR Notation",
+      conceptName: "Classless Inter-Domain Routing (CIDR)",
+      duration: "7 min",
+      order: 2,
+      miloIntro: "Let's master binary subnet masks, network IDs, and host calculation with foolproof shortcuts!",
+      cards: [
+        {
+          id: "card_1",
+          type: "concept",
+          heading: "Anatomy of an IPv4 Subnet",
+          content: [
+            "An IPv4 address consists of 32 bits divided into 4 octets (e.g. 192.168.1.50).",
+            "CIDR notation `/N` indicates that the first N bits represent the Network ID, leaving (32 - N) bits for Host addresses.",
+            "Total IP addresses in `/N` subnet = 2^(32 - N). Usable host addresses = 2^(32 - N) - 2 (subtracting Network ID where all host bits are 0, and Broadcast ID where all host bits are 1).",
+          ],
+          formula: "\\text{Usable Hosts} = 2^{(32 - N)} - 2",
+          formulaLabels: [
+            { symbol: "/24", label: "256 total IPs, 254 usable hosts (Mask: 255.255.255.0)" },
+            { symbol: "/28", label: "16 total IPs, 14 usable hosts (Mask: 255.255.255.240)" },
+          ],
+        },
+      ],
+      interactiveCheck: {
+        question: "For a subnet allocated with CIDR block `192.168.10.64/26`, how many USABLE host IP addresses can be assigned to devices on this subnet?",
+        options: [
+          { id: "A", text: "62 usable hosts", isCorrect: true, feedback: "Correct! Host bits = 32 - 26 = 6 bits. Total IPs = 2^6 = 64. Usable hosts = 64 - 2 = 62. Network ID is .64 and Broadcast is .127." },
+          { id: "B", text: "64 usable hosts", isCorrect: false, feedback: "You forgot to subtract Network ID (.64) and Broadcast ID (.127)." },
+          { id: "C", text: "30 usable hosts", isCorrect: false, feedback: "That would be a /27 subnet (32 - 27 = 5 bits)." },
+          { id: "D", text: "126 usable hosts", isCorrect: false, feedback: "That would be a /25 subnet." },
+        ],
+      },
+      tutorExtensions: {
+        simplify: {
+          analogyTitle: "Area Codes and Phone Extensions",
+          analogyContent: "The Network portion of an IP is like a city area code (+1-415). It gets your call to San Francisco. The Host portion is the local 7-digit number that rings your specific desk phone.",
+        },
+        anotherExample: {
+          title: "Finding Subnet Mask for /27",
+          problem: "What is the dotted-decimal subnet mask for /27?",
+          solution: "27 bits = 8 + 8 + 8 + 3 bits. First three octets = 255.255.255. Fourth octet has 3 leading ones: 128 + 64 + 32 = 224. Subnet Mask = 255.255.255.224.",
+        },
+        hint: "Always calculate host bits h = 32 - N, then usable hosts = 2^h - 2.",
+        similarQuestion: {
+          question: "What is the broadcast address for `10.0.0.0/30`?",
+          options: [
+            { id: "opt_1", text: "10.0.0.3", isCorrect: true, feedback: "Correct! /30 has 4 IPs: .0 (Network), .1 and .2 (Usable), .3 (Broadcast)." },
+            { id: "opt_2", text: "10.0.0.4", isCorrect: false, feedback: "Incorrect." },
+            { id: "opt_3", text: "10.0.0.255", isCorrect: false, feedback: "That would be for /24." },
+            { id: "opt_4", text: "10.0.0.1", isCorrect: false, feedback: "That is the first usable host." },
+          ],
+        },
+      },
+    },
+  ],
+
+  cse3_dbms: [
+    {
+      id: "lesson_dbms_normalization",
+      conceptId: "dbms_normalization_bcnf",
+      title: "Database Normalization (1NF to BCNF)",
+      conceptName: "Database Normalization & Functional Dependencies",
+      duration: "7 min",
+      order: 1,
+      miloIntro: "Let's explore why database normalization is essential to eradicate insertion, deletion, and update anomalies!",
+      cards: [
+        {
+          id: "card_1",
+          type: "concept",
+          heading: "The Normal Forms Progression",
+          content: [
+            "1NF (First Normal Form): Every column contains strictly atomic (single-valued) attributes. No repeating groups or comma-separated lists.",
+            "2NF: Relation is in 1NF AND no non-prime attribute is partially dependent on any proper subset of a candidate key.",
+            "3NF: Relation is in 2NF AND no non-prime attribute is transitively dependent on a candidate key (For X → Y, either X is a superkey OR Y is a prime attribute).",
+            "BCNF (Boyce-Codd): Strictly requires that for EVERY non-trivial functional dependency X → Y, X MUST be a superkey.",
+          ],
+          formula: "1\\text{NF} \\subset 2\\text{NF} \\subset 3\\text{NF} \\subset \\text{BCNF} \\subset 4\\text{NF}",
+          formulaLabels: [
+            { symbol: "Prime Attribute", label: "An attribute that forms part of ANY candidate key" },
+            { symbol: "BCNF", label: "Eliminates all redundancy based on functional dependencies" },
+          ],
+        },
+      ],
+      interactiveCheck: {
+        question: "Consider relation R(A, B, C, D) with candidate key (A, B) and functional dependency C → D. If C is not a candidate key and D is not a prime attribute, what is the HIGHEST normal form R satisfies?",
+        options: [
+          { id: "A", text: "Second Normal Form (2NF)", isCorrect: true, feedback: "Spot on! Both A and B are prime. C and D are non-prime. Since C → D is a dependency between two non-prime attributes, it is a TRANSITIVE dependency (A,B → C and C → D). Transitive dependencies violate 3NF, but because C is not a proper subset of candidate key (A, B), it does NOT violate 2NF!" },
+          { id: "B", text: "Third Normal Form (3NF)", isCorrect: false, feedback: "C → D violates 3NF because C is neither a superkey nor is D prime." },
+          { id: "C", text: "First Normal Form (1NF) only", isCorrect: false, feedback: "There is no partial dependency on A or B alone, so it satisfies 2NF." },
+          { id: "D", text: "BCNF", isCorrect: false, feedback: "BCNF is much stricter." },
+        ],
+      },
+      tutorExtensions: {
+        simplify: {
+          analogyTitle: "The Address Book Spreadsheet",
+          analogyContent: "Imagine an Excel sheet where every time an employee buys a product, you type their full home address, manager name, and department budget. If they move homes, you must update 50 rows (Update Anomaly). If you delete their only purchase, you accidentally delete their home address too (Delete Anomaly). Normalization splits this into an Employees table and an Orders table linked by EmployeeID.",
+        },
+        anotherExample: {
+          title: "Testing for 3NF",
+          problem: "Given R(EmpID, DeptID, DeptName) with key EmpID and FDs: EmpID → DeptID, DeptID → DeptName. Why is this not in 3NF?",
+          solution: "DeptID is not a superkey, and DeptName is not prime. Therefore DeptID → DeptName is a transitive dependency that violates 3NF. Splitting into R1(EmpID, DeptID) and R2(DeptID, DeptName) solves it.",
+        },
+        hint: "For 3NF: In X → Y, X must be a superkey OR Y must be prime. In BCNF: X MUST be a superkey.",
+        similarQuestion: {
+          question: "Can a table in 3NF violate BCNF?",
+          options: [
+            { id: "opt_1", text: "Yes, when overlapping candidate keys exist and a functional dependency has a prime attribute on the right-hand side", isCorrect: true, feedback: "Correct! If X is not a superkey, but Y is prime, 3NF allows it, but BCNF strictly forbids it." },
+            { id: "opt_2", text: "No, 3NF and BCNF are identical", isCorrect: false, feedback: "BCNF is strictly stronger." },
+            { id: "opt_3", text: "Only in NoSQL databases", isCorrect: false, feedback: "Irrelevant." },
+            { id: "opt_4", text: "No, BCNF is weaker than 3NF", isCorrect: false, feedback: "BCNF is stronger." },
+          ],
+        },
+      },
+    },
+  ],
+
+  cse3_os: [
+    {
+      id: "lesson_os_process_scheduling",
+      conceptId: "os_process_scheduling_cpu",
+      title: "Process Lifecycle & CPU Scheduling",
+      conceptName: "Process Management & CPU Scheduling",
+      duration: "6 min",
+      order: 1,
+      miloIntro: "Let's explore how the operating system kernel coordinates processes, handles context switches, and schedules CPU execution!",
+      cards: [
+        {
+          id: "card_1",
+          type: "concept",
+          heading: "The Process Lifecycle & PCB",
+          content: [
+            "A Process is a program in execution containing Text (code), Data (globals), Heap (dynamically allocated memory), and Stack (local variables and call frames).",
+            "State transitions: New → Ready (in ready queue) → Running (dispatched to CPU) → Waiting (blocked on I/O or event) → Terminated.",
+            "The Process Control Block (PCB) maintains process state, PID, Program Counter, CPU registers, memory limits, and open file descriptors.",
+          ],
+          formula: "\\text{Turnaround Time} = \\text{Completion Time} - \\text{Arrival Time} \\quad | \\quad \\text{Waiting Time} = \\text{Turnaround Time} - \\text{Burst Time}",
+          formulaLabels: [
+            { symbol: "Context Switch", label: "Saving state of running process into PCB and restoring state of newly scheduled process" },
+            { symbol: "Preemptive", label: "OS kernel can interrupt a running process (e.g. Round Robin, SRTF)" },
+          ],
+        },
+      ],
+      interactiveCheck: {
+        question: "In CPU scheduling, which algorithm is mathematically proven to produce the MINIMUM average waiting time for a given set of processes?",
+        options: [
+          { id: "A", text: "Shortest Job First (SJF / SRTF)", isCorrect: true, feedback: "Correct! Shortest Job First (and its preemptive version Shortest Remaining Time First) is provably optimal because scheduling short bursts earlier drastically lowers the cumulative wait time for all subsequent processes." },
+          { id: "B", text: "First-Come First-Served (FCFS)", isCorrect: false, feedback: "FCFS suffers from the Convoy Effect where short processes get trapped behind long ones." },
+          { id: "C", text: "Round Robin with large quantum", isCorrect: false, feedback: "Round Robin balances fairness, but does not minimize average waiting time." },
+          { id: "D", text: "Priority Scheduling without aging", isCorrect: false, feedback: "Priority scheduling risks indefinite starvation." },
+        ],
+      },
+      tutorExtensions: {
+        simplify: {
+          analogyTitle: "Supermarket Express Checkout Lane",
+          analogyContent: "If a person with 1 carton of milk gets stuck behind 3 shoppers with 100 groceries each (FCFS), their wait time is 45 minutes! If the cashier serves the 1-item person first (Shortest Job First), they leave in 30 seconds, dropping the average wait time across all shoppers significantly.",
+        },
+        anotherExample: {
+          title: "Calculating Round Robin Turnaround",
+          problem: "Two processes P1 (burst 4) and P2 (burst 2) arrive at time 0. Time quantum = 2. Find completion times.",
+          solution: "Time 0-2: P1 runs (remaining 2). Time 2-4: P2 runs (burst 2, finishes at 4!). Time 4-6: P1 runs and finishes at 6. P2 turnaround = 4, P1 turnaround = 6.",
+        },
+        hint: "Waiting Time = Turnaround Time minus Burst Time.",
+        similarQuestion: {
+          question: "What serious issue can occur in Shortest Job First scheduling if a continuous stream of short processes keeps arriving?",
+          options: [
+            { id: "opt_1", text: "Starvation (Indefinite blocking) of long processes", isCorrect: true, feedback: "Correct! Long processes will never be dispatched. This is solved using 'Aging'." },
+            { id: "opt_2", text: "Deadlock", isCorrect: false, feedback: "Scheduling starvation is distinct from circular deadlock." },
+            { id: "opt_3", text: "Thrashing", isCorrect: false, feedback: "Thrashing is a virtual memory paging issue." },
+            { id: "opt_4", text: "Convoy effect", isCorrect: false, feedback: "Convoy effect occurs in FCFS, not SJF." },
+          ],
+        },
+      },
+    },
+  ],
+
+  cse3_daa: [
+    {
+      id: "lesson_daa_dynamic_programming",
+      conceptId: "dynamic_programming_knapsack",
+      title: "Dynamic Programming vs Greedy Strategy",
+      conceptName: "Dynamic Programming Foundations",
+      duration: "7 min",
+      order: 1,
+      miloIntro: "Let's uncover the deep mechanics of Dynamic Programming: how remembering past subproblems turns exponential O(2^N) brute-force into lightning fast O(N·W) polynomial algorithms!",
+      cards: [
+        {
+          id: "card_1",
+          type: "concept",
+          heading: "When to use Dynamic Programming",
+          content: [
+            "Dynamic Programming (DP) applies when a problem exhibits two critical properties: (1) Optimal Substructure (optimal solution to the problem contains optimal solutions to subproblems), and (2) Overlapping Subproblems (the same subproblems are computed repeatedly).",
+            "Top-Down (Memoization): Solve recursively and store results in a hash table or array cache.",
+            "Bottom-Up (Tabulation): Solve base cases first and fill an iterative lookup table sequentially.",
+            "Why Greedy Fails in 0/1 Knapsack: In 0/1 Knapsack, you cannot take fractions of an item. A greedy choice based on value/weight ratio can leave empty knapsack capacity that could have been filled with higher total value.",
+          ],
+          formula: "dp[i][w] = \\max\\big(dp[i-1][w], \\; \\text{val}[i] + dp[i-1][w - \\text{wt}[i]]\\big)",
+          formulaLabels: [
+            { symbol: "dp[i][w]", label: "Maximum value achievable using a subset of first i items with weight capacity w" },
+            { symbol: "O(N · W)", label: "Pseudo-polynomial time complexity based on item count N and weight capacity W" },
+          ],
+        },
+      ],
+      interactiveCheck: {
+        question: "In the 0/1 Knapsack problem with knapsack capacity W = 5, and items: (Weight: 2, Value: 3), (Weight: 3, Value: 4), (Weight: 4, Value: 5), what is the maximum value that can be achieved?",
+        options: [
+          { id: "A", text: "Value = 7 (Items with weight 2 and 3)", isCorrect: true, feedback: "Correct! Items 1 (wt 2, val 3) and 2 (wt 3, val 4) sum to weight 5 and yield value 3 + 4 = 7. Choosing item 3 (wt 4, val 5) yields only 5 because no other item fits in the remaining capacity of 1." },
+          { id: "B", text: "Value = 5", isCorrect: false, feedback: "Selecting only item 3 wastes available capacity." },
+          { id: "C", text: "Value = 8", isCorrect: false, feedback: "Total weight would exceed capacity 5." },
+          { id: "D", text: "Value = 6", isCorrect: false, feedback: "Incorrect calculation." },
+        ],
+      },
+      tutorExtensions: {
+        simplify: {
+          analogyTitle: "Writing on a Scratchpad",
+          analogyContent: "Imagine someone asks you: 'What is 1 + 1 + 1 + 1 + 1?'. You count and say '5'. Then they write another '+ 1' on the right and ask: 'What is it now?'. You instantly say '6' because you remembered the previous 5 without recalculating from scratch! That is what Dynamic Programming does.",
+        },
+        anotherExample: {
+          title: "Fibonacci Complexity Reduction",
+          problem: "How does DP transform naive Fibonacci recursion?",
+          solution: "Naive recursion computes F(N-1) + F(N-2), repeating calculations in O(2^N) time. Memoizing previously computed values reduces the runtime to strictly O(N) linear time and O(N) space.",
+        },
+        hint: "Check both options at each item: either exclude it (dp[i-1][w]), or include it (val[i] + dp[i-1][w-wt[i]]). Take the maximum.",
+        similarQuestion: {
+          question: "Can Fractional Knapsack be solved optimally using a Greedy algorithm?",
+          options: [
+            { id: "opt_1", text: "Yes, by sorting items by Value/Weight ratio in descending order", isCorrect: true, feedback: "Spot on! Fractional knapsack allows taking continuous fractions, so greedy value-density sorting is provably optimal." },
+            { id: "opt_2", text: "No, it requires DP", isCorrect: false, feedback: "Only 0/1 knapsack requires DP." },
+            { id: "opt_3", text: "Only if all weights are equal", isCorrect: false, feedback: "Greedy works for all positive weights." },
+            { id: "opt_4", text: "Only with negative weights", isCorrect: false, feedback: "Incorrect." },
+          ],
+        },
+      },
+    },
+  ],
+
+  cse1_pps: [
+    {
+      id: "lesson_c_pointers_memory",
+      conceptId: "c_pointers_memory_allocation",
+      title: "Pointers & Dynamic Memory Allocation in C",
+      conceptName: "C Pointers & Memory Management",
+      duration: "6 min",
+      order: 1,
+      miloIntro: "Let's demystify memory addresses, pointer dereferencing, and dynamic heap allocation in C!",
+      cards: [
+        {
+          id: "card_1",
+          type: "concept",
+          heading: "Pointers, Addresses & Heap Memory",
+          content: [
+            "Every variable resides at a physical memory address in RAM accessed via the address-of operator `&var`.",
+            "A pointer `int *ptr = &var;` stores this memory address. Dereferencing `*ptr` accesses or modifies the value stored at that address.",
+            "`malloc(size)` allocates contiguous bytes on the Heap and returns a `void*` pointer. `calloc(n, size)` allocates and zero-initializes. Always call `free(ptr)` to prevent memory leaks!",
+          ],
+          formula: "\\text{int } *p = (\\text{int}*) \\text{malloc}(N \\times \\text{sizeof}(\\text{int})); \\quad \\text{free}(p);",
+          formulaLabels: [
+            { symbol: "malloc()", label: "Heap allocation, uninitialized garbage memory" },
+            { symbol: "free()", label: "Releases heap memory back to OS to prevent memory exhaustion" },
+          ],
+        },
+      ],
+      interactiveCheck: {
+        question: "What is the danger of using a pointer after calling `free(ptr)` on it without setting `ptr = NULL`?",
+        options: [
+          { id: "A", text: "It becomes a Dangling Pointer, leading to undefined behavior or security vulnerabilities", isCorrect: true, feedback: "Spot on! A dangling pointer still points to freed memory that may be reallocated for something else. Dereferencing it causes memory corruption or security exploits (Use-After-Free)." },
+          { id: "B", text: "It causes an immediate compile-time syntax error", isCorrect: false, feedback: "The compiler cannot detect dangling pointer dereferences at compile time." },
+          { id: "C", text: "The memory is automatically reallocated", isCorrect: false, feedback: "Memory is never automatically reallocated." },
+          { id: "D", text: "The variable is promoted to static", isCorrect: false, feedback: "Incorrect." },
+        ],
+      },
+      tutorExtensions: {
+        simplify: {
+          analogyTitle: "The Locker Number Note",
+          analogyContent: "A variable is the gym locker holding your shoes. The memory address is the locker number (e.g. Locker #245). A pointer is a small sticky note in your pocket with '245' written on it. Dereferencing (*ptr) means using that sticky note to unlock Locker #245 and pick up your shoes!",
+        },
+        anotherExample: {
+          title: "Pointer Arithmetic",
+          problem: "If an integer pointer `int *p = 1000` on a 64-bit machine where `sizeof(int) = 4`, what is the value of `p + 2`?",
+          solution: "Pointer arithmetic scales by data type size: `p + 2 = 1000 + 2 × sizeof(int) = 1000 + 8 = 1008`.",
+        },
+        hint: "& gives the address (where is it?), * gives the value (what is inside?).",
+        similarQuestion: {
+          question: "What does `sizeof(char*)` return on a 64-bit operating system?",
+          options: [
+            { id: "opt_1", text: "8 bytes", isCorrect: true, feedback: "Correct! On a 64-bit system, ALL pointer variables (char*, int*, double*) take 8 bytes to hold a 64-bit memory address." },
+            { id: "opt_2", text: "1 byte", isCorrect: false, feedback: "char is 1 byte, but a pointer to char is an address requiring 8 bytes." },
+            { id: "opt_3", text: "4 bytes", isCorrect: false, feedback: "4 bytes is on 32-bit systems." },
+            { id: "opt_4", text: "16 bytes", isCorrect: false, feedback: "Too large." },
+          ],
+        },
+      },
+    },
+  ],
 };
+
+// Universal Dynamic Lesson Generator for any topic across the entire curriculum
+export function getOrGenerateLesson(lessonId, requestedTopic = null) {
+  // 1. Search existing static lessons across all collections
+  for (const key of Object.keys(LESSONS_DATA)) {
+    const list = LESSONS_DATA[key];
+    if (Array.isArray(list)) {
+      const found = list.find((l) => l.id === lessonId);
+      if (found) return found;
+    }
+  }
+
+  // 2. Synthesize comprehensive dynamic lesson for any topic
+  const cleanTitle = (requestedTopic?.name || lessonId.replace(/^lesson_/, "").replace(/_/g, " "))
+    .split(" ")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+
+  const concepts = requestedTopic?.concepts || [
+    "Core conceptual principles and mathematical / architectural foundations",
+    "Step-by-step problem solving walkthrough and common traps",
+    "Practical real-world industry application and exam benchmarks"
+  ];
+
+  return {
+    id: lessonId,
+    conceptId: requestedTopic?.id || lessonId,
+    title: cleanTitle,
+    conceptName: cleanTitle,
+    duration: requestedTopic?.duration || "15 min",
+    order: 1,
+    miloIntro: `Welcome! Let's master ${cleanTitle} step by step with clear concepts, intuitive analogies, and practical walkthroughs.`,
+    cards: [
+      {
+        id: "card_1",
+        type: "concept",
+        heading: `Foundations of ${cleanTitle}`,
+        content: [
+          `${cleanTitle} is a foundational pillar in this syllabus. Mastering this enables confident application in exam scenarios and engineering design.`,
+          `Key concept: ${concepts[0] || "Understanding primary laws, definitions, and invariant properties."}`,
+          `Practical insight: ${concepts[1] || "Connecting mathematical equations to observable behavior and design trade-offs."}`,
+        ],
+        formula: "\\text{Core Invariant: } \\Delta \\Phi + \\sum \\lambda_i = \\text{Constant}",
+        formulaLabels: [
+          { symbol: "Concept Invariant", label: "Core governing rule applicable across all standard scenarios" },
+          { symbol: "Application Benchmark", label: "Target mastery level expected for high-scoring exams" },
+        ],
+      },
+      {
+        id: "card_2",
+        type: "worked_example",
+        heading: `Worked Example: Analyzing ${cleanTitle}`,
+        problem: `Apply the principles of ${cleanTitle} to evaluate a standard benchmark problem and identify the optimal resolution.`,
+        steps: [
+          { step: "Step 1: Identify Knowns and Constraints", detail: "List all given quantities, boundary constraints, and target unknowns." },
+          { step: "Step 2: Apply Governing Theorem", detail: `Formulate the equations and state transitions specific to ${cleanTitle}.` },
+          { step: "Step 3: Solve and Verify Invariants", detail: "Substitute values, perform dimensional/complexity checks, and verify edge cases." },
+          { step: "Key Takeaway", detail: "Always verify boundary conditions to avoid common sign or indexing errors." },
+        ],
+      },
+    ],
+    interactiveCheck: {
+      question: `Which of the following statements is TRUE regarding the fundamental principles of ${cleanTitle}?`,
+      options: [
+        { id: "A", text: `The core invariants of ${cleanTitle} hold consistently under all standard boundary conditions.`, isCorrect: true, feedback: "Spot on! That is the core governing property of this topic." },
+        { id: "B", text: "The principles only apply when external friction or latency is completely infinite.", isCorrect: false, feedback: "Incorrect. Standard theorems govern finite operational conditions." },
+        { id: "C", text: "It is an unverified heuristic with no formal mathematical or architectural basis.", isCorrect: false, feedback: "Incorrect. This is an established standard curriculum concept." },
+        { id: "D", text: "It cannot be combined with other modular concepts.", isCorrect: false, feedback: "Incorrect. This concept readily composes with subsequent syllabus units." },
+      ],
+    },
+    tutorExtensions: {
+      simplify: {
+        analogyTitle: `Intuitive Real-World Analogy for ${cleanTitle}`,
+        analogyContent: `Think of ${cleanTitle} like a well-regulated transit system: every component has a designated lane, clear traffic signals, and checks to prevent collisions or bottlenecks. When each part follows its rule, the entire system flows smoothly.`,
+      },
+      anotherExample: {
+        title: `Alternative Problem Setup: ${cleanTitle}`,
+        problem: `Consider an edge case where input conditions fluctuate by 20%. How do the governing equations respond?`,
+        solution: `By analyzing sensitivity and partial derivatives, we observe that the response is proportional and stable within standard tolerance bounds.`,
+      },
+      hint: `Recall the core definitions of ${cleanTitle} and look for invariants that remain constant throughout the process.`,
+      similarQuestion: {
+        question: `What is the primary benefit of mastering ${cleanTitle}?`,
+        options: [
+          { id: "opt_1", text: "Building robust conceptual intuition to solve complex multi-step problems rapidly", isCorrect: true, feedback: "Correct! Deep intuition enables quick problem-solving without memorization." },
+          { id: "opt_2", text: "Eliminating the need to understand subsequent units", isCorrect: false, feedback: "Units build upon each other sequentially." },
+          { id: "opt_3", text: "Avoiding all practical testing", isCorrect: false, feedback: "Incorrect." },
+          { id: "opt_4", text: "None of the above", isCorrect: false, feedback: "Incorrect." },
+        ],
+      },
+    },
+  };
+}
+

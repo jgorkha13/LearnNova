@@ -16,6 +16,7 @@ import LearnView from "./views/LearnView";
 import PracticeView from "./views/PracticeView";
 import ProgressView from "./views/ProgressView";
 import ProfileView from "./views/ProfileView";
+import LibraryView from "./views/LibraryView";
 import LessonModal from "./views/LessonModal";
 
 import { fetchProfile, updateProfile, fetchProgress, fetchStreakActivity } from "./services/api";
@@ -85,17 +86,18 @@ export default function App() {
         const payload = {
           isOnboarded: true,
           name: customData.name,
-          category: customData.category || "entrance",
-          grade: "Class 12",
-          board: "CBSE",
-          subject: customData.subject || "Physics",
-          topic: customData.topic || "Current Electricity",
-          topicId: customData.topicId || "current_electricity",
+          category: customData.category || "college",
+          domain: customData.domain || (customData.grade === "Class 11" ? "class_11" : "cse_3rd_year"),
+          grade: customData.grade || "B.Tech CSE - 3rd Year",
+          board: customData.board || "CBSE",
+          subject: customData.subject || "Software Engineering",
+          topic: customData.topic || "Agile Manifesto & Scrum Framework",
+          topicId: customData.topicId || "se_u1_t1",
           exam: customData.category === "entrance" ? "JEE Main" : "",
           preferences: {
             studyTime: customData.preferences?.studyTime || "30 min",
             confidence: "medium",
-            struggleArea: "Numerical problem solving & formula application",
+            struggleArea: "System design & algorithmic trade-offs",
             learningStyle: "Simple intuitive explanations with worked examples",
           },
         };
@@ -103,10 +105,16 @@ export default function App() {
         setProfile(data.profile);
         const progData = await fetchProgress();
         if (progData) setProgress(progData);
-        setMode("assessment");
+        // Start lessons directly without prerequisite quizzes
+        setMode("app");
+        setActiveTab("dashboard");
+        if (customData?.lessonId || customData?.topicId) {
+          setActiveLessonId(customData.lessonId || `lesson_${customData.topicId}`);
+        }
       } catch (err) {
         console.error("Direct signup error:", err);
-        setMode("assessment");
+        setMode("app");
+        setActiveTab("dashboard");
       } finally {
         setLoading(false);
       }
@@ -145,9 +153,16 @@ export default function App() {
       setProfile(data.profile);
       const progData = await fetchProgress();
       if (progData) setProgress(progData);
-      setMode("assessment");
+      // Directly start lessons for new learners - do not force quizzes
+      setMode("app");
+      setActiveTab("dashboard");
+      if (newProfile?.topicId) {
+        setActiveLessonId(`lesson_${newProfile.topicId}`);
+      }
     } catch (err) {
       console.error("Failed to complete onboarding:", err);
+      setMode("app");
+      setActiveTab("dashboard");
     } finally {
       setLoading(false);
     }
@@ -328,6 +343,16 @@ export default function App() {
               onOpenSubjectDashboard={() => setIsSubjectDashboardOpen(true)}
               onNavigateTo={(tab) => setActiveTab(tab)}
               onStartDiagnostic={() => setMode("assessment")}
+            />
+          )}
+
+          {activeTab === "library" && (
+            <LibraryView
+              key={profile?.domain || "library"}
+              profile={profile}
+              onStartLesson={(lessonId) => setActiveLessonId(lessonId)}
+              onOpenTutor={(ctx) => setIsTutorOpen(true)}
+              onTopicSwitched={handleTopicSwitched}
             />
           )}
 

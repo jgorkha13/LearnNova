@@ -41,10 +41,6 @@ export default function Navigation({
       if (item.id === "tutor") onOpenTutor();
       return;
     }
-    if (item.id === "library") {
-      onOpenSubjectDashboard();
-      return;
-    }
     onSelectTab(item.id);
   };
 

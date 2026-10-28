@@ -5,7 +5,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import { CURRICULUM_DATA } from "./curriculum.js";
-import { LESSONS_DATA } from "./lessonsData.js";
+import { LESSONS_DATA, getOrGenerateLesson } from "./lessonsData.js";
+import { DOMAINS, HIERARCHICAL_CURRICULUM } from "./hierarchicalCurriculum.js";
 import { handleTutorChat } from "./tutorEngine.js";
 
 dotenv.config();
@@ -129,80 +130,162 @@ app.get("/api/health", (req, res) => {
 // 2. Curriculum Metadata
 app.get("/api/curriculum", (req, res) => {
   res.json({
+    domains: DOMAINS,
+    hierarchical: HIERARCHICAL_CURRICULUM,
     categories: CURRICULUM_DATA.learnerCategories,
     academicOptions: CURRICULUM_DATA.academicOptions,
     concepts: CURRICULUM_DATA.concepts,
   });
 });
 
+// 2b. Hierarchical Domains List & Active State
+app.get("/api/curriculum/domains", (req, res) => {
+  const activeDomain = db.profile.domain || "cse_3rd_year";
+  res.json({
+    domains: DOMAINS,
+    activeDomain,
+    currentTopicId: db.profile.topicId,
+    currentSubject: db.profile.subject,
+  });
+});
+
+// 2c. Get Specific Domain with Units, Topics & Live Track Reports
+app.get("/api/curriculum/domain/:domainId", (req, res) => {
+  const { domainId } = req.params;
+  const domainData = HIERARCHICAL_CURRICULUM[domainId] || HIERARCHICAL_CURRICULUM.cse_3rd_year;
+
+  // Enrich with live track reports from db.topicReports
+  const enrichedSubjects = domainData.subjects.map((sub) => {
+    let subTotalTopics = 0;
+    let subCompletedTopics = 0;
+
+    const units = sub.units.map((unit) => {
+      let unitCompleted = 0;
+      const topics = unit.topics.map((top) => {
+        subTotalTopics++;
+        const liveReport = db.topicReports?.[top.id];
+        const mergedReport = liveReport
+          ? { ...top.trackReport, ...liveReport }
+          : top.trackReport;
+
+        if (mergedReport.status === "completed" || mergedReport.percent === 100) {
+          unitCompleted++;
+          subCompletedTopics++;
+        }
+
+        return {
+          ...top,
+          isCurrent: top.id === db.profile.topicId,
+          trackReport: mergedReport,
+        };
+      });
+
+      return {
+        ...unit,
+        totalTopics: unit.topics.length,
+        completedTopics: unitCompleted,
+        percent: unit.topics.length > 0 ? Math.round((unitCompleted / unit.topics.length) * 100) : 0,
+        topics,
+      };
+    });
+
+    return {
+      ...sub,
+      totalUnits: sub.units.length,
+      totalTopics: subTotalTopics,
+      completedTopics: subCompletedTopics,
+      overallMastery: subTotalTopics > 0 ? Math.round((subCompletedTopics / subTotalTopics) * 100) : 0,
+      units,
+    };
+  });
+
+  res.json({
+    id: domainData.id,
+    title: domainData.title,
+    subjects: enrichedSubjects,
+  });
+});
+
+// 2d. Update Track Report for a Topic
+app.post("/api/topic-progress/update", (req, res) => {
+  const { topicId, status, percent, timeSpentMinutes, score, lessonId } = req.body;
+  if (!db.topicReports) db.topicReports = {};
+
+  const prev = db.topicReports[topicId] || {};
+  const currentMinutes = parseInt(prev.timeSpent || "0", 10) + (timeSpentMinutes || 15);
+
+  db.topicReports[topicId] = {
+    ...prev,
+    status: status || "completed",
+    percent: percent !== undefined ? percent : 100,
+    timeSpent: `${currentMinutes}m`,
+    mastery: (percent !== undefined ? percent : 100) >= 80 ? "Mastered" : "Learning",
+    questionsSolved: prev.questionsSolved || "5/5",
+    accuracy: prev.accuracy || "92%",
+    lastActive: "Today",
+    lessonId: lessonId || prev.lessonId,
+    updatedAt: new Date().toISOString(),
+  };
+
+  recordActivity();
+  saveStore(db);
+
+  res.json({ success: true, topicReport: db.topicReports[topicId] });
+});
+
 // 3. Topics Dashboard (All subjects and topics with student's mastery)
 app.get("/api/topics-dashboard", (req, res) => {
-  const currentTopicId = db.profile.topicId || "current_electricity";
-  const subjectsList = [
-    {
-      subject: "Physics",
-      category: "School & Entrance",
-      topics: [
-        { id: "current_electricity", name: "Current Electricity", totalConcepts: 8 },
-        { id: "electrostatics", name: "Electric Charges & Fields", totalConcepts: 3 },
-      ],
-    },
-    {
-      subject: "Chemistry",
-      category: "School & Entrance",
-      topics: [
-        { id: "electrochemistry", name: "Electrochemistry", totalConcepts: 4 },
-      ],
-    },
-    {
-      subject: "Mathematics",
-      category: "School & Entrance",
-      topics: [
-        { id: "calculus_integrals", name: "Calculus & Integrals", totalConcepts: 3 },
-      ],
-    },
-    {
-      subject: "Computer Science",
-      category: "College & Programming",
-      topics: [
-        { id: "binary_search_trees", name: "Binary Search Trees", totalConcepts: 3 },
-      ],
-    },
-  ];
+  const currentTopicId = db.profile.topicId || "se_u1_t1";
+  const activeDomain = db.profile.domain || "cse_3rd_year";
+  const domainData = HIERARCHICAL_CURRICULUM[activeDomain] || HIERARCHICAL_CURRICULUM.cse_3rd_year;
 
-  // Enrich with current progress
-  const enriched = subjectsList.map((sub) => ({
-    ...sub,
-    topics: sub.topics.map((t) => {
-      const concepts = CURRICULUM_DATA.concepts[t.id] || [];
-      const mastered = concepts.filter((c) => db.conceptProficiency[c.id]?.status === "mastered").length;
-      return {
-        ...t,
-        masteredCount: mastered,
-        isCurrent: t.id === currentTopicId,
-        percent: concepts.length > 0 ? Math.round((mastered / concepts.length) * 100) : 0,
-      };
-    }),
+  const subjectsList = domainData.subjects.map((sub) => ({
+    subject: sub.name,
+    code: sub.code,
+    category: domainData.title,
+    icon: sub.icon,
+    color: sub.color,
+    unitsCount: sub.units.length,
+    topics: sub.units.flatMap((u) =>
+      u.topics.map((t) => {
+        const live = db.topicReports?.[t.id] || t.trackReport;
+        return {
+          id: t.id,
+          name: t.name,
+          unitTitle: u.title,
+          lessonId: t.lessonId,
+          duration: t.duration,
+          difficulty: t.difficulty,
+          isCurrent: t.id === currentTopicId,
+          status: live.status,
+          percent: live.percent,
+          mastery: live.mastery,
+          timeSpent: live.timeSpent,
+        };
+      })
+    ),
   }));
 
   res.json({
     currentTopicId,
-    currentSubject: db.profile.subject,
-    currentGrade: db.profile.grade,
-    subjects: enriched,
+    currentSubject: db.profile.subject || subjectsList[0]?.subject,
+    currentGrade: db.profile.grade || domainData.title,
+    activeDomain,
+    subjects: subjectsList,
   });
 });
 
 // 4. Switch Subject/Topic WITHOUT Resetting Progress
 app.post("/api/switch-topic", (req, res) => {
-  const { subject, topic, topicId, grade, board } = req.body;
+  const { subject, topic, topicId, domain, grade, board } = req.body;
+  if (domain) db.profile.domain = domain;
   if (subject) db.profile.subject = subject;
   if (topic) db.profile.topic = topic;
   if (topicId) db.profile.topicId = topicId;
   if (grade) db.profile.grade = grade;
   if (board) db.profile.board = board;
 
-  // Clear temporary active assessment session so user can start fresh diagnostic for the new topic
+  // Clear temporary active assessment session so user starts clean
   db.assessmentSession = null;
   saveStore(db);
 
@@ -641,23 +724,20 @@ app.post("/api/learning-path/complete-activity", (req, res) => {
 // 12. Get Specific Lesson
 app.get("/api/lesson/:id", (req, res) => {
   const { id } = req.params;
-  const topicId = db.profile.topicId || "current_electricity";
-  const lessons = LESSONS_DATA[topicId] || LESSONS_DATA.current_electricity;
-  const lesson = lessons.find((l) => l.id === id);
+  const lesson = getOrGenerateLesson(id);
 
   if (!lesson) {
     return res.status(404).json({ error: "Lesson not found" });
   }
 
+  recordActivity();
   res.json({ lesson });
 });
 
 // 13. Lesson Dynamic Action
 app.post("/api/lesson/action", (req, res) => {
   const { lessonId, actionType } = req.body;
-  const topicId = db.profile.topicId || "current_electricity";
-  const lessons = LESSONS_DATA[topicId] || LESSONS_DATA.current_electricity;
-  const lesson = lessons.find((l) => l.id === lessonId);
+  const lesson = getOrGenerateLesson(lessonId);
 
   if (!lesson || !lesson.tutorExtensions) {
     return res.status(404).json({ error: "Lesson extensions not found" });
