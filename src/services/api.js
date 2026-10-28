@@ -194,3 +194,20 @@ export async function updateTopicProgress(payload) {
   return await res.json();
 }
 
+export async function fetchTopicQuiz(topicId, params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  const res = await fetch(`${BASE_URL}/api/topic-quiz/${topicId}${qs ? `?${qs}` : ""}`);
+  if (!res.ok) throw new Error("Failed to fetch topic quiz");
+  return await res.json();
+}
+
+export async function submitTopicQuiz({ topicId, answers, timeSpentSeconds }) {
+  const res = await fetch(`${BASE_URL}/api/topic-quiz/submit`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ topicId, answers, timeSpentSeconds }),
+  });
+  if (!res.ok) throw new Error("Failed to submit topic quiz");
+  return await res.json();
+}
+

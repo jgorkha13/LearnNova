@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { X, CheckCircle, AlertCircle, HelpCircle, Sparkles, BookOpen, Calculator, RefreshCw, ArrowRight } from "lucide-react";
+import { X, HelpCircle, Sparkles, Calculator, ArrowRight } from "lucide-react";
 import MiloCharacter from "../components/MiloCharacter";
 import Formula from "../components/Formula";
-import { fetchLesson, sendLessonAction, completeActivity } from "../services/api";
+import { fetchLesson, sendLessonAction, completeActivity, fetchTopicQuiz, submitTopicQuiz } from "../services/api";
 
 export default function LessonModal({ lessonId, onClose, onLessonCompleted }) {
   const [loading, setLoading] = useState(true);
@@ -11,11 +11,12 @@ export default function LessonModal({ lessonId, onClose, onLessonCompleted }) {
   // Dynamic Tutor Extensions State
   const [dynamicCards, setDynamicCards] = useState([]);
   const [activeHint, setActiveHint] = useState(null);
-  const [activeCheck, setActiveCheck] = useState(null);
-
-  // Check question interaction
-  const [selectedOptionId, setSelectedOptionId] = useState(null);
-  const [checkResult, setCheckResult] = useState(null);
+  const [quizStarted, setQuizStarted] = useState(false);
+  const [topicQuiz, setTopicQuiz] = useState(null);
+  const [quizAnswers, setQuizAnswers] = useState({});
+  const [quizResult, setQuizResult] = useState(null);
+  const [quizLoading, setQuizLoading] = useState(false);
+  const [quizSubmitting, setQuizSubmitting] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
 
   // Milo state
@@ -28,7 +29,6 @@ export default function LessonModal({ lessonId, onClose, onLessonCompleted }) {
         const data = await fetchLesson(lessonId);
         if (data.lesson) {
           setLesson(data.lesson);
-          setActiveCheck(data.lesson.interactiveCheck);
           setMiloMessage(data.lesson.miloIntro || "Let's explore this concept step-by-step!");
           setMiloExpression("explaining");
         }
@@ -71,38 +71,9 @@ export default function LessonModal({ lessonId, onClose, onLessonCompleted }) {
         ]);
       } else if (actionType === "hint" && res.data) {
         setActiveHint(res.data.hint);
-      } else if (actionType === "similar_question" && res.data) {
-        setActiveCheck(res.data);
-        setSelectedOptionId(null);
-        setCheckResult(null);
       }
     } catch (err) {
       console.error("Action error:", err);
-    }
-  };
-
-  const handleOptionSelect = (optId) => {
-    if (checkResult) return;
-    setSelectedOptionId(optId);
-  };
-
-  const handleCheckSubmit = () => {
-    if (!selectedOptionId || !activeCheck) return;
-    const opt = activeCheck.options.find((o) => o.id === selectedOptionId);
-    const isCorrect = opt ? opt.isCorrect : false;
-
-    setCheckResult({
-      isCorrect,
-      selectedOptionId,
-      feedback: opt ? opt.feedback : isCorrect ? "Correct!" : "Incorrect.",
-    });
-
-    if (isCorrect) {
-      setMiloExpression("celebrating");
-      setMiloMessage("Brilliant deduction! You understood the key principle.");
-    } else {
-      setMiloExpression("concerned");
-      setMiloMessage("That's okay! Review the reasoning below and try the similar question control if needed.");
     }
   };
 
@@ -112,7 +83,7 @@ export default function LessonModal({ lessonId, onClose, onLessonCompleted }) {
       await completeActivity({
         activityId: lesson.id,
         conceptId: lesson.conceptId,
-        score: checkResult?.isCorrect ? 100 : 75,
+        score: quizResult?.percentage ?? 0,
       });
       onLessonCompleted(lesson.id);
     } catch (err) {
@@ -120,6 +91,41 @@ export default function LessonModal({ lessonId, onClose, onLessonCompleted }) {
       onClose();
     } finally {
       setIsCompleting(false);
+    }
+  };
+
+  const startTopicQuiz = async () => {
+    if (quizLoading) return;
+    setQuizLoading(true);
+    try {
+      const data = await fetchTopicQuiz(lesson.conceptId, {
+        topicName: lesson.title,
+        subject: lesson.conceptName,
+      });
+      setTopicQuiz(data);
+      setQuizStarted(true);
+      setMiloExpression("curious");
+      setMiloMessage(`Let's check what you learned about ${lesson.conceptName || lesson.title}.`);
+    } catch (err) {
+      console.error("Topic quiz load error:", err);
+      setMiloMessage("I couldn't load the quiz just now. Please try again.");
+    } finally {
+      setQuizLoading(false);
+    }
+  };
+
+  const submitTopicQuizAnswers = async () => {
+    if (!topicQuiz || quizSubmitting || Object.keys(quizAnswers).length < topicQuiz.questions.length) return;
+    setQuizSubmitting(true);
+    try {
+      const result = await submitTopicQuiz({ topicId: lesson.conceptId, answers: quizAnswers });
+      setQuizResult(result);
+      setMiloExpression(result.percentage >= 80 ? "celebrating" : "supportive");
+      setMiloMessage(result.judgmentVerdict);
+    } catch (err) {
+      console.error("Topic quiz submit error:", err);
+    } finally {
+      setQuizSubmitting(false);
     }
   };
 
@@ -269,14 +275,6 @@ export default function LessonModal({ lessonId, onClose, onLessonCompleted }) {
               <HelpCircle size={14} color="var(--brand-primary)" />
               <span>Give me a hint</span>
             </button>
-            <button
-              onClick={() => handleAction("similar_question")}
-              className="btn btn-secondary"
-              style={{ fontSize: 12, padding: "6px 12px", borderRadius: "var(--radius-full)" }}
-            >
-              <RefreshCw size={14} color="var(--brand-primary)" />
-              <span>Try a similar question</span>
-            </button>
           </div>
 
           {/* Hint Callout if active */}
@@ -409,8 +407,22 @@ export default function LessonModal({ lessonId, onClose, onLessonCompleted }) {
             </div>
           ))}
 
-          {/* Interactive Check Section */}
-          {activeCheck && (
+          {!quizStarted && (
+            <div style={{ padding: 22, marginTop: 24, border: "2px solid var(--border-brand)", borderRadius: "var(--radius-lg)", background: "var(--brand-primary-tint)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                <MiloCharacter expression="curious" size={48} />
+                <div style={{ flex: 1 }}>
+                  <strong style={{ color: "var(--text-primary)" }}>Ready for a quick topic quiz?</strong>
+                  <p style={{ margin: "4px 0 0", color: "var(--text-secondary)", fontSize: 13 }}>I’ll ask you about {lesson.conceptName || lesson.title} and explain the answer.</p>
+                </div>
+                <button onClick={startTopicQuiz} disabled={quizLoading} className="btn btn-primary">
+                  {quizLoading ? "Preparing quiz…" : "Start topic quiz"} <ArrowRight size={16} />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {quizStarted && topicQuiz && (
             <div
               style={{
                 backgroundColor: "var(--bg-surface)",
@@ -420,74 +432,38 @@ export default function LessonModal({ lessonId, onClose, onLessonCompleted }) {
                 marginTop: 24,
               }}
             >
-              <div
-                style={{
-                  fontSize: 12,
-                  fontWeight: 700,
-                  color: "var(--brand-primary)",
-                  textTransform: "uppercase",
-                  marginBottom: 6,
-                }}
-              >
-                Comprehension Check
+              <div style={{ fontSize: 12, fontWeight: 700, color: "var(--brand-primary)", textTransform: "uppercase", marginBottom: 6 }}>
+                {topicQuiz.subject} • {topicQuiz.questions.length}-question topic quiz
               </div>
-              <h4 style={{ fontSize: 16, fontWeight: 700, color: "var(--text-primary)", margin: "0 0 16px 0", lineHeight: 1.4 }}>
-                {activeCheck.question}
-              </h4>
-
-              <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 16 }}>
-                {activeCheck.options.map((opt) => {
-                  const isSelected = selectedOptionId === opt.id;
-                  let cardClass = "";
-                  if (checkResult) {
-                    if (opt.isCorrect) cardClass = "correct";
-                    else if (isSelected && !checkResult.isCorrect) cardClass = "incorrect";
-                    else cardClass = "disabled";
-                  } else if (isSelected) {
-                    cardClass = "selected";
-                  }
-
-                  return (
-                    <button
-                      key={opt.id}
-                      onClick={() => handleOptionSelect(opt.id)}
-                      disabled={!!checkResult}
-                      className={`option-card ${cardClass}`}
-                      style={{ padding: "12px 16px" }}
-                    >
-                      <div className="option-badge">{opt.id}</div>
-                      <div className="option-text" style={{ flex: 1 }}>{opt.text}</div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Check Submit or Feedback */}
-              {!checkResult ? (
-                <button
-                  onClick={handleCheckSubmit}
-                  disabled={!selectedOptionId}
-                  className="btn btn-primary"
-                  style={{ width: "100%", padding: "12px 0" }}
-                >
-                  Verify Understanding
-                </button>
-              ) : (
-                <div
-                  style={{
-                    padding: "14px 18px",
-                    borderRadius: "var(--radius-md)",
-                    backgroundColor: checkResult.isCorrect ? "var(--success-bg)" : "var(--error-bg)",
-                    border: "1px solid",
-                    borderColor: checkResult.isCorrect ? "var(--success-border)" : "var(--error-border)",
-                    color: checkResult.isCorrect ? "var(--success-text)" : "var(--error-text)",
-                    fontSize: 13,
-                    lineHeight: 1.5,
-                  }}
-                >
-                  <strong>{checkResult.isCorrect ? "Spot on!" : "Reasoning breakdown:"} </strong>
-                  {checkResult.feedback}
+              {topicQuiz.questions.map((question, index) => {
+                const result = quizResult?.questionResults?.find((item) => item.questionId === question.id);
+                return (
+                  <div key={question.id} style={{ padding: "16px 0", borderBottom: index < topicQuiz.questions.length - 1 ? "1px solid var(--border-light)" : "none" }}>
+                    <h4 style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)", margin: "0 0 12px", lineHeight: 1.45 }}>
+                      {index + 1}. {question.question}
+                    </h4>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      {question.options.map((option) => {
+                        const selected = quizAnswers[question.id] === option.id;
+                        const correct = result?.correctOptionId === option.id;
+                        const incorrect = result?.selectedOptionId === option.id && !result?.isCorrect;
+                        return <button key={option.id} disabled={!!quizResult} onClick={() => setQuizAnswers((prev) => ({ ...prev, [question.id]: option.id }))} className={`option-card ${correct ? "correct" : incorrect ? "incorrect" : selected ? "selected" : ""}`} style={{ padding: "10px 14px" }}>
+                          <div className="option-badge">{option.id}</div><div className="option-text" style={{ flex: 1 }}>{option.text}</div>
+                        </button>;
+                      })}
+                    </div>
+                    {result && <p style={{ margin: "10px 0 0", fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.5 }}>{result.feedback} {result.explanation}</p>}
+                  </div>
+                );
+              })}
+              {quizResult ? (
+                <div style={{ marginTop: 16, padding: 16, borderRadius: "var(--radius-md)", background: "var(--success-bg)", color: "var(--text-primary)" }}>
+                  <strong>{quizResult.percentage}% • {quizResult.mastery}</strong><p style={{ margin: "5px 0 0", fontSize: 13 }}>{quizResult.gapAnalysis}</p>
                 </div>
+              ) : (
+                <button onClick={submitTopicQuizAnswers} disabled={Object.keys(quizAnswers).length < topicQuiz.questions.length || quizSubmitting} className="btn btn-primary" style={{ width: "100%", marginTop: 16, padding: "12px 0" }}>
+                  {quizSubmitting ? "Checking your answers…" : "Submit quiz answers"}
+                </button>
               )}
             </div>
           )}
@@ -509,12 +485,12 @@ export default function LessonModal({ lessonId, onClose, onLessonCompleted }) {
           </button>
 
           <button
-            onClick={handleFinishLesson}
-            disabled={!checkResult || isCompleting}
+            onClick={quizStarted ? handleFinishLesson : startTopicQuiz}
+            disabled={(quizStarted && !quizResult) || quizLoading || isCompleting}
             className="btn btn-primary"
             style={{ padding: "12px 28px", fontSize: 15 }}
           >
-            <span>{isCompleting ? "Saving..." : "Complete Lesson & Advance"}</span>
+            <span>{isCompleting ? "Saving..." : quizLoading ? "Preparing quiz…" : quizStarted ? "Finish Quiz & Complete Topic" : "Finish Learning & Start Quiz"}</span>
             <ArrowRight size={18} />
           </button>
         </div>

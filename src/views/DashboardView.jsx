@@ -21,145 +21,138 @@ import {
   Atom,
   FlaskConical,
   Binary,
+  Cpu,
+  Network,
+  Database,
+  GraduationCap,
 } from "lucide-react";
 import LumiCharacter from "../components/LumiCharacter";
-import { fetchProgress, fetchStreakActivity, fetchTopicsDashboard } from "../services/api";
+import {
+  fetchProgress,
+  fetchStreakActivity,
+  fetchDomainCurriculum,
+  switchTopic,
+} from "../services/api";
 
 export default function DashboardView({
   profile,
+  progress,
   onStartLesson,
   onOpenTutor,
   onOpenStreakModal,
   onOpenSubjectDashboard,
   onNavigateTo,
-  onStartDiagnostic,
+  onTopicSwitched,
 }) {
-  const [progressData, setProgressData] = useState(null);
+  const [progressData, setProgressData] = useState(progress || null);
   const [streakData, setStreakData] = useState(null);
-  const [smartMode, setSmartMode] = useState(true);
-  const [selectedTagFilter, setSelectedTagFilter] = useState("all");
+  const [curriculumData, setCurriculumData] = useState(null);
+  const [loadingCurriculum, setLoadingCurriculum] = useState(false);
 
   const studentName = profile?.name || "Alex";
-  const activeSubject = profile?.subject || "Physics";
-  const activeTopic = profile?.topic || "Current Electricity";
-  const activeExam = profile?.exam || profile?.grade || "Class 12 Boards / JEE";
+  const activeDomain = profile?.domain || "class_11";
+  const activeSubjectName = profile?.subject || "Physics";
+  const activeTopicName = profile?.topic || "Uniformly Accelerated Motion & Equations";
 
+  // Load progress, streak, and active domain curriculum
   useEffect(() => {
     async function loadData() {
       try {
-        const [prog, streak] = await Promise.all([
+        const [prog, streak, curRes] = await Promise.all([
           fetchProgress().catch(() => null),
           fetchStreakActivity().catch(() => null),
+          fetchDomainCurriculum(activeDomain).catch(() => null),
         ]);
         if (prog) setProgressData(prog);
         if (streak) setStreakData(streak);
+        if (curRes) setCurriculumData(curRes);
       } catch (err) {
-        console.warn("Could not load dashboard auxiliary data:", err);
+        console.warn("Could not load dashboard data:", err);
       }
     }
     loadData();
-  }, [profile?.topicId]);
+  }, [profile?.topicId, profile?.domain, profile?.subject]);
+
+  // Find active subject inside curriculum
+  const activeSubject =
+    curriculumData?.subjects?.find(
+      (s) => s.name.toLowerCase() === (activeSubjectName || "").toLowerCase()
+    ) ||
+    curriculumData?.subjects?.[0] ||
+    null;
+
+  // Find active topic object
+  let activeTopicObj = null;
+  activeSubject?.units?.forEach((u) => {
+    u.topics?.forEach((t) => {
+      if (t.id === profile?.topicId || t.name === activeTopicName) {
+        activeTopicObj = t;
+      }
+    });
+  });
 
   // Derived metrics
   const completedLessons = progressData?.overallProgress?.completedNodes || 4;
   const inProgressCount = 2;
-  const studyHours = "3.5h";
   const averageProgress = progressData?.overallProgress?.percentage || 68;
   const currentStreak = streakData?.currentStreak || 7;
 
-  // AI Recommended Lessons/Activities matching the user screenshot layout
-  const recommendations = [
-    {
-      id: "lesson_electric_current_drift",
-      type: "Article",
-      typeIcon: FileText,
-      formatLabel: "Interactive Article",
-      recommended: true,
-      title: "Electric Current & Drift Velocity",
-      description: "Master microscopic electron throughput, relaxation time, and why electrons drift slower than a snail.",
-      duration: "15m",
-      subject: "Physics",
-      subjectIcon: Atom,
-      difficulty: "Beginner",
-      difficultyColor: "#059669",
-      difficultyBg: "#ECFDF5",
-      tags: ["#drift-velocity", "#circuits", "#ohms-law"],
-      topicId: "current_electricity",
-      conceptId: "electric_current_drift",
-    },
-    {
-      id: "lesson_ohms_law",
-      type: "Interactive",
-      typeIcon: Zap,
-      formatLabel: "Targeted Practice",
-      recommended: true,
-      title: "Ohm's Law & Temperature Factors",
-      description: "Derive R(T) = R₀[1 + αΔT], understand thermal lattice vibrations, and avoid positive vs negative α traps.",
-      duration: "20m",
-      subject: "Physics",
-      subjectIcon: Atom,
-      difficulty: "Intermediate",
-      difficultyColor: "#D97706",
-      difficultyBg: "#FEF3C7",
-      tags: ["#resistance", "#temperature-coefficient", "#jee-core"],
-      topicId: "current_electricity",
-      conceptId: "temp_dependence_resistance",
-    },
-    {
-      id: "lesson_galvanic_cells",
-      type: "Video",
-      typeIcon: Video,
-      formatLabel: "Video & Analogy",
-      recommended: true,
-      title: "Galvanic Cells & Nernst Equation",
-      description: "Understand spontaneous redox half-reactions, salt bridges, and EMF calculation under non-standard conditions.",
-      duration: "25m",
-      subject: "Chemistry",
-      subjectIcon: FlaskConical,
-      difficulty: "Intermediate",
-      difficultyColor: "#D97706",
-      difficultyBg: "#FEF3C7",
-      tags: ["#redox", "#galvanic-cell", "#nernst"],
-      topicId: "electrochemistry",
-      conceptId: "galvanic_cells_emf",
-    },
-    {
-      id: "lesson_calculus_integrals",
-      type: "Interactive",
-      typeIcon: Sparkles,
-      formatLabel: "Numerical Workshop",
-      recommended: true,
-      title: "Definite Integrals & Area under Curves",
-      description: "Connect Riemann slice sums to definite limits, substitution rules, and integration by parts (ILATE).",
-      duration: "20m",
-      subject: "Mathematics",
-      subjectIcon: BookOpen,
-      difficulty: "Intermediate",
-      difficultyColor: "#D97706",
-      difficultyBg: "#FEF3C7",
-      tags: ["#calculus", "#definite-integrals", "#ilate"],
-      topicId: "calculus_integrals",
-      conceptId: "definite_integrals_area",
-    },
-    {
-      id: "lesson_binary_search_trees",
-      type: "Interactive",
-      typeIcon: Code2,
-      formatLabel: "Interactive Code",
-      recommended: true,
-      title: "Binary Search Trees & Traversal",
-      description: "Master BST invariants, left < root < right recursive logic, and O(log N) lookup guarantees.",
-      duration: "25m",
-      subject: "Computer Science",
-      subjectIcon: Binary,
-      difficulty: "Beginner",
-      difficultyColor: "#059669",
-      difficultyBg: "#ECFDF5",
-      tags: ["#trees", "#inorder", "#dsa-algorithms"],
-      topicId: "binary_search_trees",
-      conceptId: "bst_properties",
-    },
-  ];
+  // Build DYNAMIC recommendations from the active subject's units & topics
+  const dynamicRecommendations = [];
+  if (activeSubject?.units) {
+    activeSubject.units.forEach((unit, uIdx) => {
+      unit.topics?.forEach((top, tIdx) => {
+        if (dynamicRecommendations.length < 4) {
+          const isArticle = tIdx % 2 === 0;
+          dynamicRecommendations.push({
+            id: top.lessonId || `lesson_${top.id}`,
+            type: isArticle ? "Article" : "Interactive",
+            typeIcon: isArticle ? FileText : Zap,
+            formatLabel: isArticle ? "Concept Lesson" : "Interactive Guide",
+            recommended: true,
+            title: top.name,
+            description: `Master core principles, key definitions (${top.concepts?.slice(0, 2).join(", ") || "theory"}), and practical exam applications.`,
+            duration: top.duration || "20m",
+            subject: activeSubject.name,
+            difficulty: top.difficulty || "Intermediate",
+            difficultyColor:
+              top.difficulty === "Advanced"
+                ? "#DC2626"
+                : top.difficulty === "Intermediate"
+                ? "#D97706"
+                : "#059669",
+            difficultyBg:
+              top.difficulty === "Advanced"
+                ? "#FEE2E2"
+                : top.difficulty === "Intermediate"
+                ? "#FEF3C7"
+                : "#ECFDF5",
+            tags: top.concepts?.slice(0, 3) || ["#core-theory", "#exam-prep"],
+            topicId: top.id,
+          });
+        }
+      });
+    });
+  }
+
+  // Quick switch chapter handler
+  const handleQuickChapterChange = async (targetTopic) => {
+    if (!targetTopic || !activeSubject) return;
+    try {
+      const res = await switchTopic({
+        domain: activeDomain,
+        subject: activeSubject.name,
+        topic: targetTopic.name,
+        topicId: targetTopic.id,
+        grade: curriculumData?.title || activeDomain,
+      });
+      if (onTopicSwitched) {
+        onTopicSwitched(res.profile);
+      }
+    } catch (err) {
+      console.error("Failed to switch chapter:", err);
+    }
+  };
 
   // Dynamic date string
   const todayStr = new Intl.DateTimeFormat("en-US", {
@@ -170,19 +163,10 @@ export default function DashboardView({
   }).format(new Date());
 
   const handleStartRecommendation = (rec) => {
-    if (rec.topicId === profile?.topicId && rec.id) {
-      if (onStartLesson) {
-        onStartLesson(rec.id);
-      } else {
-        onNavigateTo("learn");
-      }
-    } else {
-      // Switch topic or open lesson
-      if (onStartLesson) {
-        onStartLesson(rec.id);
-      } else {
-        onNavigateTo("learn");
-      }
+    if (onStartLesson && rec.id) {
+      onStartLesson(rec.id);
+    } else if (onNavigateTo) {
+      onNavigateTo("learn");
     }
   };
 
@@ -215,7 +199,7 @@ export default function DashboardView({
               gap: 4,
             }}
           >
-            {activeSubject}: {activeTopic}
+            {activeSubject?.name || activeSubjectName}: {activeTopicObj?.name || activeTopicName}
             <ChevronRight size={14} />
           </span>
         </div>
@@ -232,40 +216,40 @@ export default function DashboardView({
               alignItems: "center",
               gap: 6,
             }}
+            title="Switch subject, domain, or chapter"
           >
             <Layers size={16} color="var(--brand-primary)" />
-            <span>Change Subject ({activeSubject})</span>
+            <span>Change Subject ({activeSubject?.name || activeSubjectName})</span>
           </button>
 
-          {onStartDiagnostic && (
-            <button
-              onClick={onStartDiagnostic}
-              className="btn btn-primary"
-              style={{
-                padding: "7px 14px",
-                fontSize: 13,
-                borderRadius: "var(--radius-md)",
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-              }}
-            >
-              <Sparkles size={15} />
-              <span>Diagnostic Assessment</span>
-            </button>
-          )}
+          <button
+            onClick={() => onNavigateTo("practice")}
+            className="btn btn-primary"
+            style={{
+              padding: "7px 14px",
+              fontSize: 13,
+              borderRadius: "var(--radius-md)",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+            title="Open syllabus and take topic quizzes"
+          >
+            <Target size={16} />
+            <span>Syllabus & Quiz Hub</span>
+          </button>
         </div>
       </div>
 
-      {/* Main Welcome Headline (Exact layout as screenshot) */}
+      {/* Hero Welcome Banner */}
       <div
         style={{
           display: "flex",
+          alignItems: "center",
           justifyContent: "space-between",
-          alignItems: "flex-end",
           marginBottom: 24,
           flexWrap: "wrap",
-          gap: 12,
+          gap: 16,
         }}
       >
         <div>
@@ -281,7 +265,8 @@ export default function DashboardView({
             Welcome back, {studentName}!
           </h1>
           <p style={{ fontSize: 16, color: "var(--text-secondary)", margin: 0 }}>
-            Ready to continue your learning journey in <strong style={{ color: "var(--text-primary)" }}>{activeTopic}</strong>?
+            Active Subject: <strong style={{ color: "var(--text-primary)" }}>{activeSubject?.name || activeSubjectName}</strong> • Current Focus:{" "}
+            <strong style={{ color: "var(--brand-primary)" }}>{activeTopicObj?.name || activeTopicName}</strong>
           </p>
         </div>
 
@@ -295,7 +280,84 @@ export default function DashboardView({
         </div>
       </div>
 
-      {/* 4 Top Metric Cards (Exact screenshot replica style) */}
+      {/* QUICK CHAPTER & SUBJECT SELECTOR STRIP */}
+      <div
+        className="card"
+        style={{
+          padding: "16px 20px",
+          marginBottom: 28,
+          backgroundColor: "var(--bg-surface)",
+          borderRadius: "var(--radius-lg)",
+          border: "1px solid var(--brand-primary-border)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 16,
+          flexWrap: "wrap",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 12, fontWeight: 800, color: "var(--brand-primary)", textTransform: "uppercase" }}>
+            Quick Chapter Switch:
+          </span>
+
+          {/* Direct Subject Chapters Dropdown */}
+          <select
+            value={profile?.topicId || ""}
+            onChange={(e) => {
+              const selectedId = e.target.value;
+              let foundTopic = null;
+              activeSubject?.units?.forEach((u) => {
+                u.topics?.forEach((t) => {
+                  if (t.id === selectedId) foundTopic = t;
+                });
+              });
+              if (foundTopic) handleQuickChapterChange(foundTopic);
+            }}
+            style={{
+              padding: "7px 14px",
+              borderRadius: "var(--radius-md)",
+              border: "1px solid var(--border-medium)",
+              backgroundColor: "var(--bg-canvas)",
+              fontSize: 13,
+              fontWeight: 600,
+              color: "var(--text-primary)",
+              cursor: "pointer",
+            }}
+          >
+            {activeSubject?.units?.map((u) => (
+              <optgroup key={u.id} label={u.title}>
+                {u.topics?.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.name}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button
+            onClick={onOpenSubjectDashboard}
+            className="btn btn-secondary"
+            style={{ padding: "7px 14px", fontSize: 12, fontWeight: 700 }}
+          >
+            ⚡ Switch Subject & Domain
+          </button>
+
+          <button
+            onClick={() => onNavigateTo("practice")}
+            className="btn btn-primary"
+            style={{ padding: "7px 14px", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", gap: 4 }}
+          >
+            <Target size={14} />
+            <span>Test Topic with Lumi</span>
+          </button>
+        </div>
+      </div>
+
+      {/* 4 Top Metric Cards */}
       <div
         style={{
           display: "grid",
@@ -318,16 +380,13 @@ export default function DashboardView({
         >
           <div>
             <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 8 }}>
-              Completed Lessons
+              Completed Topics
             </div>
             <div style={{ fontSize: 32, fontWeight: 800, color: "var(--text-primary)", lineHeight: 1 }}>
-              {completedLessons}
+              {activeSubject?.completedTopics || completedLessons}
             </div>
             <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 8 }}>
-              Keep up the great work!
-            </div>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "#059669", marginTop: 4 }}>
-              +12% from last week
+              {activeSubject?.totalTopics || 12} total topics in syllabus
             </div>
           </div>
           <div
@@ -360,16 +419,54 @@ export default function DashboardView({
         >
           <div>
             <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 8 }}>
-              In Progress
+              Active Learning Units
             </div>
             <div style={{ fontSize: 32, fontWeight: 800, color: "var(--text-primary)", lineHeight: 1 }}>
-              {inProgressCount}
+              {activeSubject?.units?.length || 5}
             </div>
             <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 8 }}>
-              Courses you're working on
+              In {activeSubject?.name || activeSubjectName}
             </div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: "var(--text-secondary)", marginTop: 4 }}>
-              {activeSubject} & Chemistry
+          </div>
+          <div
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: "50%",
+              backgroundColor: "#EEF2FF",
+              color: "var(--brand-primary)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Layers size={22} />
+          </div>
+        </div>
+
+        {/* Card 3: LeetCode Streak */}
+        <div
+          className="card"
+          onClick={onOpenStreakModal}
+          style={{
+            padding: "22px 20px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            borderRadius: "var(--radius-lg)",
+            border: "1px solid var(--border-light)",
+            cursor: "pointer",
+          }}
+        >
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 8 }}>
+              Learning Streak
+            </div>
+            <div style={{ fontSize: 32, fontWeight: 800, color: "#D97706", lineHeight: 1 }}>
+              {currentStreak} Days 🔥
+            </div>
+            <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 8 }}>
+              Click to view LeetCode matrix
             </div>
           </div>
           <div
@@ -384,49 +481,7 @@ export default function DashboardView({
               justifyContent: "center",
             }}
           >
-            <Clock size={22} />
-          </div>
-        </div>
-
-        {/* Card 3: Total Study Time */}
-        <div
-          className="card"
-          style={{
-            padding: "22px 20px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            borderRadius: "var(--radius-lg)",
-            border: "1px solid var(--border-light)",
-          }}
-        >
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 8 }}>
-              Total Study Time
-            </div>
-            <div style={{ fontSize: 32, fontWeight: 800, color: "var(--text-primary)", lineHeight: 1 }}>
-              {studyHours}
-            </div>
-            <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 8 }}>
-              Hours spent learning
-            </div>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "#2563EB", marginTop: 4 }}>
-              +8% from last week
-            </div>
-          </div>
-          <div
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: "50%",
-              backgroundColor: "#EFF6FF",
-              color: "#2563EB",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <TrendingUp size={22} />
+            <Flame size={22} />
           </div>
         </div>
 
@@ -444,16 +499,13 @@ export default function DashboardView({
         >
           <div>
             <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-secondary)", marginBottom: 8 }}>
-              Average Progress
+              Subject Mastery
             </div>
             <div style={{ fontSize: 32, fontWeight: 800, color: "var(--text-primary)", lineHeight: 1 }}>
-              {averageProgress}%
+              {activeSubject?.overallMastery || averageProgress}%
             </div>
             <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 8 }}>
-              Across active concepts
-            </div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: "#7C3AED", marginTop: 4 }}>
-              Target: 85% for exam
+              Exam readiness index
             </div>
           </div>
           <div
@@ -473,7 +525,7 @@ export default function DashboardView({
         </div>
       </div>
 
-      {/* MORE INFORMATIVE: Concept Gap & Knowledge Health Matrix Strip */}
+      {/* DYNAMIC CONCEPT GAP & DIAGNOSTIC MATRIX STRIP (BASED ON ACTIVE TOPIC!) */}
       <div
         className="card"
         style={{
@@ -490,12 +542,12 @@ export default function DashboardView({
           gap: 16,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16, flex: 1, minWidth: 280 }}>
           <LumiCharacter expression="thinking" size={54} floating={true} />
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span style={{ fontSize: 14, fontWeight: 800, color: "var(--text-primary)" }}>
-                Diagnostic Concept Matrix: {activeTopic}
+                Diagnostic Concept Focus: {activeTopicObj?.name || activeTopicName}
               </span>
               <span
                 style={{
@@ -503,22 +555,33 @@ export default function DashboardView({
                   fontWeight: 700,
                   padding: "2px 8px",
                   borderRadius: "var(--radius-full)",
-                  backgroundColor: "#FEF3C7",
-                  color: "#92400E",
+                  backgroundColor:
+                    activeTopicObj?.trackReport?.mastery === "Mastered"
+                      ? "#ECFDF5"
+                      : "#FEF3C7",
+                  color:
+                    activeTopicObj?.trackReport?.mastery === "Mastered"
+                      ? "#059669"
+                      : "#92400E",
                 }}
               >
-                1 High-Priority Gap
+                {activeTopicObj?.trackReport?.mastery || "Measurement Pending"}
               </span>
             </div>
             <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: "4px 0 0 0" }}>
-              Lumi detected friction in <strong>Temperature Dependence of Resistance</strong>. Repairing this unlocks 15+ Board & JEE questions.
+              {activeTopicObj?.trackReport?.judgmentVerdict ||
+                `Lumi is ready to judge your conceptual measurement in ${activeTopicObj?.name || activeTopicName}. Take a 3-question quiz to uncover your exact level!`}
             </p>
           </div>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <button
-            onClick={() => onOpenTutor(`I want to understand why metallic conductor resistance increases with temperature, while semiconductors have negative alpha.`)}
+            onClick={() =>
+              onOpenTutor(
+                `Lumi, explain the core physical intuition and applications of ${activeTopicObj?.name || activeTopicName} using simple analogies.`
+              )
+            }
             className="btn btn-secondary"
             style={{
               padding: "9px 16px",
@@ -545,12 +608,12 @@ export default function DashboardView({
             }}
           >
             <Zap size={15} />
-            <span>Targeted Practice</span>
+            <span>🎯 Topic Quiz & Measure</span>
           </button>
         </div>
       </div>
 
-      {/* AI Recommendations for You Section (Exact layout as screenshot) */}
+      {/* DYNAMIC AI RECOMMENDATIONS FOR THE ACTIVE SUBJECT */}
       <div style={{ marginBottom: 36 }}>
         <div
           style={{
@@ -576,12 +639,12 @@ export default function DashboardView({
               <Sparkles size={18} />
             </div>
             <h2 style={{ fontSize: 22, fontWeight: 800, color: "var(--text-primary)", margin: 0 }}>
-              AI Recommendations for You
+              AI Recommendations in {activeSubject?.name || activeSubjectName}
             </h2>
           </div>
 
           <button
-            onClick={() => onNavigateTo("learn")}
+            onClick={() => onNavigateTo("library")}
             className="btn-ghost"
             style={{
               fontSize: 14,
@@ -593,12 +656,12 @@ export default function DashboardView({
               padding: "6px 12px",
             }}
           >
-            <span>View All</span>
+            <span>View Full Syllabus</span>
             <ChevronRight size={16} />
           </button>
         </div>
 
-        {/* 3-Column / 2-Column Responsive Card Grid (Matching Screenshot) */}
+        {/* Dynamic Card Grid */}
         <div
           style={{
             display: "grid",
@@ -606,7 +669,7 @@ export default function DashboardView({
             gap: 20,
           }}
         >
-          {recommendations.map((rec) => {
+          {dynamicRecommendations.map((rec) => {
             const TypeIcon = rec.typeIcon;
             return (
               <div
@@ -624,7 +687,6 @@ export default function DashboardView({
                 }}
               >
                 <div>
-                  {/* Card Header Tag Row */}
                   <div
                     style={{
                       display: "flex",
@@ -647,27 +709,24 @@ export default function DashboardView({
                       <span>{rec.formatLabel}</span>
                     </div>
 
-                    {rec.recommended && (
-                      <span
-                        style={{
-                          fontSize: 11,
-                          fontWeight: 700,
-                          padding: "2px 8px",
-                          borderRadius: "var(--radius-full)",
-                          backgroundColor: "#EEF2FF",
-                          color: "var(--brand-primary)",
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: 4,
-                        }}
-                      >
-                        <Sparkles size={12} />
-                        Recommended
-                      </span>
-                    )}
+                    <span
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 700,
+                        padding: "2px 8px",
+                        borderRadius: "var(--radius-full)",
+                        backgroundColor: "#EEF2FF",
+                        color: "var(--brand-primary)",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 4,
+                      }}
+                    >
+                      <Sparkles size={12} />
+                      Recommended
+                    </span>
                   </div>
 
-                  {/* Title & Description */}
                   <h3
                     style={{
                       fontSize: 17,
@@ -691,7 +750,6 @@ export default function DashboardView({
                     {rec.description}
                   </p>
 
-                  {/* Meta Details Row */}
                   <div
                     style={{
                       display: "flex",
@@ -727,11 +785,10 @@ export default function DashboardView({
                     </span>
                   </div>
 
-                  {/* Tag Chips */}
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 20 }}>
-                    {rec.tags.map((t) => (
+                    {rec.tags.map((t, idx) => (
                       <span
-                        key={t}
+                        key={idx}
                         style={{
                           fontSize: 11,
                           fontFamily: "var(--font-mono)",
@@ -748,33 +805,51 @@ export default function DashboardView({
                   </div>
                 </div>
 
-                {/* Card CTA Button (Screenshot matching blue full width button) */}
-                <button
-                  onClick={() => handleStartRecommendation(rec)}
-                  className="btn btn-primary"
-                  style={{
-                    width: "100%",
-                    padding: "11px 0",
-                    fontSize: 14,
-                    fontWeight: 700,
-                    borderRadius: "var(--radius-md)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                    boxShadow: "0 2px 4px rgba(79, 70, 229, 0.25)",
-                  }}
-                >
-                  <BookOpen size={16} />
-                  <span>Start Learning</span>
-                </button>
+                <div style={{ display: "flex", gap: 10 }}>
+                  <button
+                    onClick={() => handleStartRecommendation(rec)}
+                    className="btn btn-primary"
+                    style={{
+                      flex: 1,
+                      padding: "11px 0",
+                      fontSize: 14,
+                      fontWeight: 700,
+                      borderRadius: "var(--radius-md)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 8,
+                    }}
+                  >
+                    <BookOpen size={16} />
+                    <span>Start Lesson</span>
+                  </button>
+
+                  <button
+                    onClick={() => onNavigateTo("practice")}
+                    className="btn btn-secondary"
+                    style={{
+                      padding: "11px 16px",
+                      fontSize: 13,
+                      fontWeight: 700,
+                      borderRadius: "var(--radius-md)",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 6,
+                    }}
+                    title="Take targeted measurement quiz on this topic"
+                  >
+                    <Target size={15} />
+                    <span>Quiz</span>
+                  </button>
+                </div>
               </div>
             );
           })}
         </div>
       </div>
 
-      {/* MORE INFORMATIVE: LeetCode Streak Preview Strip & Daily Goal Hub */}
+      {/* LeetCode Streak Preview Strip & Daily Goal */}
       <div
         style={{
           display: "grid",
@@ -811,10 +886,9 @@ export default function DashboardView({
             Consistency beats last-minute cramming. Study 15 minutes today to preserve your active streak shield!
           </p>
 
-          {/* Mini 14-Day Activity Row */}
           <div style={{ display: "flex", alignItems: "center", gap: 6, overflowX: "auto", paddingBottom: 6 }}>
             {Array.from({ length: 14 }).map((_, i) => {
-              const isActive = i >= 7; // Last 7 days active
+              const isActive = i >= 7;
               return (
                 <div
                   key={i}
@@ -883,7 +957,7 @@ export default function DashboardView({
           </div>
 
           <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: "0 0 16px 0" }}>
-            10 minutes remaining to reach today's target. Complete any recommended lesson above to hit 100%!
+            10 minutes remaining to reach today's target in {activeSubject?.name || activeSubjectName}. Complete any lesson or topic quiz above!
           </p>
 
           <button
@@ -891,7 +965,7 @@ export default function DashboardView({
             className="btn btn-secondary"
             style={{ width: "100%", padding: "9px 0", fontSize: 13, fontWeight: 700 }}
           >
-            <span>Solve Quick Practice Question (+5 mins)</span>
+            <span>Open Topic Quiz & Measure</span>
           </button>
         </div>
       </div>

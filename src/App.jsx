@@ -87,12 +87,12 @@ export default function App() {
           isOnboarded: true,
           name: customData.name,
           category: customData.category || "college",
-          domain: customData.domain || (customData.grade === "Class 11" ? "class_11" : "cse_3rd_year"),
-          grade: customData.grade || "B.Tech CSE - 3rd Year",
+          domain: customData.domain || (customData.grade === "Class 11" ? "class_11" : "cse_1st_year"),
+          grade: customData.grade || "B.Tech CSE - 1st Year",
           board: customData.board || "CBSE",
-          subject: customData.subject || "Software Engineering",
-          topic: customData.topic || "Agile Manifesto & Scrum Framework",
-          topicId: customData.topicId || "se_u1_t1",
+          subject: customData.category === "college" ? "Programming for Problem Solving (C)" : customData.subject || "Physics",
+          topic: customData.category === "college" ? "Algorithm Design, Flowcharts & Pseudo-code" : customData.topic || "Current Electricity",
+          topicId: customData.category === "college" ? "pps_u1_t1" : customData.topicId || "current_electricity",
           exam: customData.category === "entrance" ? "JEE Main" : "",
           preferences: {
             studyTime: customData.preferences?.studyTime || "30 min",
@@ -149,7 +149,12 @@ export default function App() {
   const handleOnboardingComplete = async (newProfile) => {
     setLoading(true);
     try {
-      const data = await updateProfile({ ...newProfile, isOnboarded: true });
+      const data = await updateProfile({
+        ...newProfile,
+        domain: newProfile.domain || (newProfile.category === "college" ? "cse_1st_year" : undefined),
+        grade: newProfile.grade || (newProfile.category === "college" ? "B.Tech CSE - 1st Year" : newProfile.grade),
+        isOnboarded: true,
+      });
       setProfile(data.profile);
       const progData = await fetchProgress();
       if (progData) setProgress(progData);
@@ -342,7 +347,7 @@ export default function App() {
               onOpenStreakModal={() => setIsStreakModalOpen(true)}
               onOpenSubjectDashboard={() => setIsSubjectDashboardOpen(true)}
               onNavigateTo={(tab) => setActiveTab(tab)}
-              onStartDiagnostic={() => setMode("assessment")}
+              onTopicSwitched={handleTopicSwitched}
             />
           )}
 
@@ -353,6 +358,7 @@ export default function App() {
               onStartLesson={(lessonId) => setActiveLessonId(lessonId)}
               onOpenTutor={(ctx) => setIsTutorOpen(true)}
               onTopicSwitched={handleTopicSwitched}
+              onNavigateTo={(tab) => setActiveTab(tab)}
             />
           )}
 
@@ -366,9 +372,12 @@ export default function App() {
 
           {activeTab === "practice" && (
             <PracticeView
-              key={profile?.topicId}
-              onOpenTutor={() => setIsTutorOpen(true)}
-              onStartDiagnostic={() => setMode("assessment")}
+              key={profile?.topicId || profile?.domain}
+              profile={profile}
+              onOpenTutor={(ctx) => setIsTutorOpen(true)}
+              onOpenSubjectDashboard={() => setIsSubjectDashboardOpen(true)}
+              onStartLesson={(lessonId) => setActiveLessonId(lessonId)}
+              onTopicSwitched={handleTopicSwitched}
             />
           )}
 

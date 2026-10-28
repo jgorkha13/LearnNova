@@ -18,7 +18,7 @@ export default function Onboarding({ onComplete, curriculum, initialSelections =
 
   // College details
   const [degree, setDegree] = useState("B.Tech / B.E.");
-  const [year, setYear] = useState("2nd Year");
+  const [year, setYear] = useState("1st Year");
   const [branch, setBranch] = useState("Computer Science & Engineering");
 
   // Entrance details
@@ -189,7 +189,17 @@ export default function Onboarding({ onComplete, curriculum, initialSelections =
                 return (
                   <button
                     key={opt.id}
-                    onClick={() => setCategory(opt.id)}
+                    onClick={() => {
+                      setCategory(opt.id);
+                      if (opt.id === "college") {
+                        setDegree("B.Tech / B.E.");
+                        setYear("1st Year");
+                        setBranch("Computer Science & Engineering");
+                        setSubject("Programming for Problem Solving (C)");
+                        setTopic("Algorithm Design, Flowcharts & Pseudo-code");
+                        setTopicId("pps_u1_t1");
+                      }
+                    }}
                     className={`option-card ${isSelected ? "selected" : ""}`}
                     style={{
                       display: "flex",
@@ -369,16 +379,16 @@ export default function Onboarding({ onComplete, curriculum, initialSelections =
                   </label>
                   <div
                     onClick={() => {
-                      setSubject("Network Analysis & Circuit Theory");
-                      setTopic("Current Electricity");
-                      setTopicId("current_electricity");
+                      setSubject("Programming for Problem Solving (C)");
+                      setTopic("Algorithm Design, Flowcharts & Pseudo-code");
+                      setTopicId("pps_u1_t1");
                     }}
                     className="option-card selected"
                     style={{ padding: "14px 18px" }}
                   >
                     <div>
-                      <div style={{ fontSize: 15, fontWeight: 700 }}>Network Analysis & DC Circuit Laws</div>
-                      <div style={{ fontSize: 12, color: "var(--text-secondary)" }}>Ohm's Law, Loop Analysis & Energy</div>
+                      <div style={{ fontSize: 15, fontWeight: 700 }}>Programming for Problem Solving (C)</div>
+                      <div style={{ fontSize: 12, color: "var(--text-secondary)" }}>Start with algorithms, flowcharts, and pseudocode</div>
                     </div>
                   </div>
                 </div>

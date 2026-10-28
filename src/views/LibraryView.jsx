@@ -35,10 +35,11 @@ export default function LibraryView({
   onStartLesson,
   onOpenTutor,
   onTopicSwitched,
+  onNavigateTo,
 }) {
   const [loading, setLoading] = useState(true);
   const [domains, setDomains] = useState([]);
-  const [selectedDomainId, setSelectedDomainId] = useState(profile?.domain || "cse_3rd_year");
+  const [selectedDomainId, setSelectedDomainId] = useState(profile?.domain || "cse_1st_year");
   const [curriculumData, setCurriculumData] = useState(null);
   const [expandedUnits, setExpandedUnits] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
@@ -52,15 +53,15 @@ export default function LibraryView({
         const d = await fetchDomains().catch(() => null);
         if (d?.domains) {
           setDomains(d.domains);
-          const initialDomain = profile?.domain || d.activeDomain || "cse_3rd_year";
+          const initialDomain = profile?.domain || d.activeDomain || "cse_1st_year";
           setSelectedDomainId(initialDomain);
           loadDomainDetails(initialDomain);
         } else {
-          loadDomainDetails("cse_3rd_year");
+          loadDomainDetails("cse_1st_year");
         }
       } catch (err) {
         console.warn("Domain load error:", err);
-        loadDomainDetails("cse_3rd_year");
+        loadDomainDetails("cse_1st_year");
       }
     }
     loadDomainsData();
@@ -121,10 +122,17 @@ export default function LibraryView({
 
   const handleStartDirectLesson = async (subject, topic) => {
     // Make sure active topic is set
-    handleSetActive(subject, topic);
+    await handleSetActive(subject, topic);
     // Open lesson modal directly
     if (onStartLesson) {
       onStartLesson(topic.lessonId || `lesson_${topic.id}`);
+    }
+  };
+
+  const handleStartTopicQuiz = async (subject, topic) => {
+    await handleSetActive(subject, topic);
+    if (onNavigateTo) {
+      onNavigateTo("practice");
     }
   };
 
@@ -182,13 +190,13 @@ export default function LibraryView({
             >
               Hierarchical Curriculum & Track Reports
             </span>
-            <span style={{ fontSize: 13, color: "var(--text-muted)" }}>• Start Lessons Directly</span>
+            <span style={{ fontSize: 13, color: "var(--text-muted)" }}>• Learn, then quiz</span>
           </div>
           <h1 style={{ fontSize: 28, fontWeight: 800, color: "var(--text-primary)", margin: 0 }}>
             Content Library & Syllabus Explorer
           </h1>
           <p style={{ fontSize: 14, color: "var(--text-secondary)", margin: "6px 0 0 0" }}>
-            Explore every subject, unit, and topic across school and engineering domains. View live track reports and jump straight into lessons without prerequisite quizzes.
+            Explore first-year CSE subjects, learn a topic, then answer a short quiz that checks the ideas you just studied.
           </p>
         </div>
 
@@ -716,7 +724,7 @@ export default function LibraryView({
                                         onClick={() => handleStartDirectLesson(subject, topic)}
                                         className="btn btn-primary"
                                         style={{
-                                          padding: "8px 16px",
+                                          padding: "8px 14px",
                                           fontSize: 13,
                                           fontWeight: 700,
                                           borderRadius: "var(--radius-md)",
@@ -729,6 +737,27 @@ export default function LibraryView({
                                       >
                                         <Play size={14} fill="currentColor" />
                                         <span>Start Lesson</span>
+                                      </button>
+
+                                      <button
+                                        onClick={() => handleStartTopicQuiz(subject, topic)}
+                                        className="btn btn-secondary"
+                                        style={{
+                                          padding: "8px 14px",
+                                          fontSize: 13,
+                                          fontWeight: 700,
+                                          borderRadius: "var(--radius-md)",
+                                          display: "inline-flex",
+                                          alignItems: "center",
+                                          gap: 6,
+                                          whiteSpace: "nowrap",
+                                          color: "var(--brand-primary)",
+                                          borderColor: "var(--brand-primary-border)",
+                                        }}
+                                        title="Take a diagnostic quiz on this topic to measure proficiency"
+                                      >
+                                        <Target size={14} color="var(--brand-primary)" />
+                                        <span>🎯 Quiz & Measure</span>
                                       </button>
 
                                       <button

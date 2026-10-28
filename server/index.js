@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import { CURRICULUM_DATA } from "./curriculum.js";
 import { LESSONS_DATA, getOrGenerateLesson } from "./lessonsData.js";
 import { DOMAINS, HIERARCHICAL_CURRICULUM } from "./hierarchicalCurriculum.js";
+import { getOrGenerateTopicQuiz } from "./topicQuizData.js";
 import { handleTutorChat } from "./tutorEngine.js";
 
 dotenv.config();
@@ -140,7 +141,7 @@ app.get("/api/curriculum", (req, res) => {
 
 // 2b. Hierarchical Domains List & Active State
 app.get("/api/curriculum/domains", (req, res) => {
-  const activeDomain = db.profile.domain || "cse_3rd_year";
+  const activeDomain = db.profile.domain || "cse_1st_year";
   res.json({
     domains: DOMAINS,
     activeDomain,
@@ -152,7 +153,7 @@ app.get("/api/curriculum/domains", (req, res) => {
 // 2c. Get Specific Domain with Units, Topics & Live Track Reports
 app.get("/api/curriculum/domain/:domainId", (req, res) => {
   const { domainId } = req.params;
-  const domainData = HIERARCHICAL_CURRICULUM[domainId] || HIERARCHICAL_CURRICULUM.cse_3rd_year;
+  const domainData = HIERARCHICAL_CURRICULUM[domainId] || HIERARCHICAL_CURRICULUM.cse_1st_year;
 
   // Enrich with live track reports from db.topicReports
   const enrichedSubjects = domainData.subjects.map((sub) => {
@@ -233,11 +234,116 @@ app.post("/api/topic-progress/update", (req, res) => {
   res.json({ success: true, topicReport: db.topicReports[topicId] });
 });
 
+function getTopicQuiz(topicId, overrides = {}) {
+  const topicContext = Object.values(HIERARCHICAL_CURRICULUM)
+    .flatMap((domain) => (domain.subjects || []).flatMap((subject) => (subject.units || []).flatMap((unit) => (unit.topics || []).filter((topic) => topic.id === topicId).map((topic) => ({ topic, subject, unit })))))[0];
+  return getOrGenerateTopicQuiz(
+    topicId,
+    topicContext?.topic.name || overrides.topicName,
+    topicContext?.subject.name || overrides.subject,
+    topicContext?.unit.title || overrides.unitTitle,
+    topicContext?.topic.concepts || [],
+  );
+}
+
+// 2e. Get Targeted Diagnostic Quiz for Specific Topic
+app.get("/api/topic-quiz/:topicId", (req, res) => {
+  const { topicId } = req.params;
+  const quiz = getTopicQuiz(topicId, req.query);
+  res.json(quiz);
+});
+
+// 2f. Submit Topic Quiz & Judge Measurement with Lumi AI Tutor
+app.post("/api/topic-quiz/submit", (req, res) => {
+  const { topicId, answers = {}, timeSpentSeconds = 60 } = req.body;
+  const quiz = getTopicQuiz(topicId);
+
+  let correctCount = 0;
+  const questionResults = quiz.questions.map((q) => {
+    const userOptionId = answers[q.id];
+    const correctOption = q.options.find((o) => o.isCorrect);
+    const selectedOption = q.options.find((o) => o.id === userOptionId);
+    const isCorrect = userOptionId === correctOption?.id;
+    if (isCorrect) correctCount++;
+
+    return {
+      questionId: q.id,
+      questionText: q.question,
+      selectedOptionId: userOptionId,
+      correctOptionId: correctOption?.id,
+      isCorrect,
+      explanation: q.explanation,
+      feedback: selectedOption?.feedback || (isCorrect ? "Correct answer!" : "Incorrect option selected."),
+      hint: q.hint,
+    };
+  });
+
+  const totalQuestions = quiz.questions.length;
+  const percentage = Math.round((correctCount / totalQuestions) * 100);
+
+  // Lumi Conceptual Measurement Judgment
+  let mastery = "Learning";
+  let judgmentVerdict = "";
+  let gapAnalysis = "";
+
+  if (percentage >= 80) {
+    mastery = "Mastered";
+    judgmentVerdict = `Lumi's Measurement Verdict: Mastered! You scored ${percentage}% (${correctCount}/${totalQuestions}). Your conceptual understanding of ${quiz.topicName} is thorough and precise.`;
+    gapAnalysis = "No major conceptual gaps identified. You accurately analyzed invariant principles and avoided boundary traps.";
+  } else if (percentage >= 50) {
+    mastery = "Competent";
+    judgmentVerdict = `Lumi's Measurement Verdict: Developing Competence (${percentage}%). You grasped foundational definitions for ${quiz.topicName}, but stumbled on coupled constraints.`;
+    gapAnalysis = "Minor friction detected in secondary constraint analysis. Lumi recommends reviewing the Socratic breakdowns below.";
+  } else {
+    mastery = "Gap Detected";
+    judgmentVerdict = `Lumi's Measurement Verdict: Concept Gap Diagnosed (${percentage}%). Lumi pinpointed foundational confusion in ${quiz.topicName}. Review the detailed explanation to master the concept!`;
+    gapAnalysis = "Foundational concept gap identified. Let's repair the core derivation before advancing to higher complexity.";
+  }
+
+  // Persist updated report into store
+  if (!db.topicReports) db.topicReports = {};
+  const prev = db.topicReports[topicId] || {};
+  const currentMinutes = parseInt(prev.timeSpent || "0", 10) + Math.max(1, Math.round(timeSpentSeconds / 60));
+
+  db.topicReports[topicId] = {
+    ...prev,
+    status: percentage >= 50 ? "completed" : "in_progress",
+    percent: percentage,
+    timeSpent: `${currentMinutes}m`,
+    mastery,
+    questionsSolved: `${correctCount}/${totalQuestions}`,
+    accuracy: `${percentage}%`,
+    lastActive: "Today",
+    lastScore: `${correctCount}/${totalQuestions}`,
+    judgmentVerdict,
+    gapAnalysis,
+    updatedAt: new Date().toISOString(),
+  };
+
+  recordActivity();
+  saveStore(db);
+
+  res.json({
+    success: true,
+    topicId,
+    topicName: quiz.topicName,
+    subject: quiz.subject,
+    score: correctCount,
+    totalQuestions,
+    percentage,
+    mastery,
+    judgmentVerdict,
+    gapAnalysis,
+    questionResults,
+    updatedReport: db.topicReports[topicId],
+  });
+});
+
 // 3. Topics Dashboard (All subjects and topics with student's mastery)
 app.get("/api/topics-dashboard", (req, res) => {
   const currentTopicId = db.profile.topicId || "se_u1_t1";
-  const activeDomain = db.profile.domain || "cse_3rd_year";
-  const domainData = HIERARCHICAL_CURRICULUM[activeDomain] || HIERARCHICAL_CURRICULUM.cse_3rd_year;
+  const activeDomain = db.profile.domain || "cse_1st_year";
+  const domainData = HIERARCHICAL_CURRICULUM[activeDomain] || HIERARCHICAL_CURRICULUM.cse_1st_year;
 
   const subjectsList = domainData.subjects.map((sub) => ({
     subject: sub.name,
@@ -724,7 +830,12 @@ app.post("/api/learning-path/complete-activity", (req, res) => {
 // 12. Get Specific Lesson
 app.get("/api/lesson/:id", (req, res) => {
   const { id } = req.params;
-  const lesson = getOrGenerateLesson(id);
+  const requestedTopic = Object.values(HIERARCHICAL_CURRICULUM)
+    .flatMap((domain) => domain.subjects || [])
+    .flatMap((subject) => subject.units || [])
+    .flatMap((unit) => unit.topics || [])
+    .find((topic) => topic.lessonId === id || `lesson_${topic.id}` === id);
+  const lesson = getOrGenerateLesson(id, requestedTopic);
 
   if (!lesson) {
     return res.status(404).json({ error: "Lesson not found" });
@@ -737,7 +848,12 @@ app.get("/api/lesson/:id", (req, res) => {
 // 13. Lesson Dynamic Action
 app.post("/api/lesson/action", (req, res) => {
   const { lessonId, actionType } = req.body;
-  const lesson = getOrGenerateLesson(lessonId);
+  const requestedTopic = Object.values(HIERARCHICAL_CURRICULUM)
+    .flatMap((domain) => domain.subjects || [])
+    .flatMap((subject) => subject.units || [])
+    .flatMap((unit) => unit.topics || [])
+    .find((topic) => topic.lessonId === lessonId || `lesson_${topic.id}` === lessonId);
+  const lesson = getOrGenerateLesson(lessonId, requestedTopic);
 
   if (!lesson || !lesson.tutorExtensions) {
     return res.status(404).json({ error: "Lesson extensions not found" });

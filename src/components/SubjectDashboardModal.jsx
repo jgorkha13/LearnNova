@@ -6,7 +6,7 @@ import { fetchDomains, fetchDomainCurriculum, switchTopic } from "../services/ap
 export default function SubjectDashboardModal({ isOpen, onClose, onTopicSwitched }) {
   const [loading, setLoading] = useState(true);
   const [domains, setDomains] = useState([]);
-  const [selectedDomain, setSelectedDomain] = useState("cse_3rd_year");
+  const [selectedDomain, setSelectedDomain] = useState("cse_1st_year");
   const [curriculumData, setCurriculumData] = useState(null);
   const [currentTopicId, setCurrentTopicId] = useState(null);
   const [isSwitching, setIsSwitching] = useState(false);
@@ -23,7 +23,7 @@ export default function SubjectDashboardModal({ isOpen, onClose, onTopicSwitched
       const domRes = await fetchDomains().catch(() => null);
       if (domRes?.domains) {
         setDomains(domRes.domains);
-        const domId = domRes.activeDomain || "cse_3rd_year";
+        const domId = domRes.activeDomain || "cse_1st_year";
         setSelectedDomain(domId);
         setCurrentTopicId(domRes.currentTopicId);
         const curRes = await fetchDomainCurriculum(domId);

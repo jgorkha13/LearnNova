@@ -951,6 +951,7 @@ export function getOrGenerateLesson(lessonId, requestedTopic = null) {
     "Step-by-step problem solving walkthrough and common traps",
     "Practical real-world industry application and exam benchmarks"
   ];
+  const firstConcept = concepts[0] || `the core principles of ${cleanTitle}`;
 
   return {
     id: lessonId,
@@ -959,22 +960,18 @@ export function getOrGenerateLesson(lessonId, requestedTopic = null) {
     conceptName: cleanTitle,
     duration: requestedTopic?.duration || "15 min",
     order: 1,
-    miloIntro: `Welcome! Let's master ${cleanTitle} step by step with clear concepts, intuitive analogies, and practical walkthroughs.`,
+    miloIntro: `Welcome! Let's learn ${cleanTitle}. Focus on the key ideas, then I’ll quiz you on this topic.`,
     cards: [
       {
         id: "card_1",
         type: "concept",
         heading: `Foundations of ${cleanTitle}`,
         content: [
-          `${cleanTitle} is a foundational pillar in this syllabus. Mastering this enables confident application in exam scenarios and engineering design.`,
-          `Key concept: ${concepts[0] || "Understanding primary laws, definitions, and invariant properties."}`,
-          `Practical insight: ${concepts[1] || "Connecting mathematical equations to observable behavior and design trade-offs."}`,
+          `${cleanTitle} is an important part of your course. Start by understanding the terms and assumptions used in this topic.`,
+          `Key idea: ${firstConcept}`,
+          `Also learn: ${concepts[1] || "How to apply the idea to a worked example and check the result."}`,
         ],
-        formula: "\\text{Core Invariant: } \\Delta \\Phi + \\sum \\lambda_i = \\text{Constant}",
-        formulaLabels: [
-          { symbol: "Concept Invariant", label: "Core governing rule applicable across all standard scenarios" },
-          { symbol: "Application Benchmark", label: "Target mastery level expected for high-scoring exams" },
-        ],
+        formula: null,
       },
       {
         id: "card_2",
@@ -990,12 +987,12 @@ export function getOrGenerateLesson(lessonId, requestedTopic = null) {
       },
     ],
     interactiveCheck: {
-      question: `Which of the following statements is TRUE regarding the fundamental principles of ${cleanTitle}?`,
+      question: `Which idea should you remember when studying ${cleanTitle}?`,
       options: [
-        { id: "A", text: `The core invariants of ${cleanTitle} hold consistently under all standard boundary conditions.`, isCorrect: true, feedback: "Spot on! That is the core governing property of this topic." },
-        { id: "B", text: "The principles only apply when external friction or latency is completely infinite.", isCorrect: false, feedback: "Incorrect. Standard theorems govern finite operational conditions." },
-        { id: "C", text: "It is an unverified heuristic with no formal mathematical or architectural basis.", isCorrect: false, feedback: "Incorrect. This is an established standard curriculum concept." },
-        { id: "D", text: "It cannot be combined with other modular concepts.", isCorrect: false, feedback: "Incorrect. This concept readily composes with subsequent syllabus units." },
+        { id: "A", text: firstConcept, isCorrect: true, feedback: `Correct. ${firstConcept}` },
+        { id: "B", text: "Ignore the assumptions and constraints in the question.", isCorrect: false, feedback: `Revisit the key idea: ${firstConcept}` },
+        { id: "C", text: "Choose a memorized answer without checking the reasoning.", isCorrect: false, feedback: `Reasoning matters. Start from: ${firstConcept}` },
+        { id: "D", text: "Treat every problem as unrelated to the concepts in this lesson.", isCorrect: false, feedback: `Connect the problem to: ${firstConcept}` },
       ],
     },
     tutorExtensions: {
